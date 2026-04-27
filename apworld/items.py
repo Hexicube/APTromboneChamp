@@ -25,6 +25,8 @@ def create_item_with_correct_classification(world: APTromboneWorld, name: str) -
     classification = ItemClassification.progression
     if name == "Nothing" or name == "Fun Fact":
         classification = ItemClassification.filler
+    if name == "Rank Reduction":
+        classification |= ItemClassification.useful
     item = APTromboneItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
     return item
 
