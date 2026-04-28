@@ -14,11 +14,11 @@ World options:
 - goal: 0 for longest track with difficulty matching max_diff, or above 0 for beating that many tracks (auto-limits to number of tracks available)
 - rating: required rating to beat a track (C to S)
 - rating_start: initial rating required to beat a track (C to S), Rank Reduction items are created to cover the difference between this and rating
-- easy_track: how many difficulty steps easier than max_diff per increase in required rank
-- fun_facts: how many Nothing filler items to replace with Fun Fact items, which say one of the game's fun facts in chat
+- easy_track: how many difficulty steps easier than max_diff per increase in required rank (rank A increases to S if this many difficulties below max_diff, B increases to S at double this, etc.), 0 to disable
+- fun_facts: how many Nothing filler items to replace with Fun Fact items, which say one of the game's fun facts in chat (auto-limits to number of fillers)
 - min_diff: minimum track difficulty to include (1-9), the starting track will be the shortest track of this difficulty
-- max_diff: maximum track difficulty to include (2-10), auto-increases to be above min_diff
-- unsafe: if enabled, includes tracks marked as stream-unsafe
+- max_diff: maximum track difficulty to include (2-10) (auto-increases to be above min_diff)
+- unsafe: if enabled, includes tracks marked as stream-unsafe (Hungarian Dance, Stars & Stripes, W. Post March)
 - celeste: if enabled, includes the Celeste DLC tracks (requires unsafe)
 - pizza: if enabled, includes the Pizza Tower DLC tracks (requires unsafe)
 - toby: if enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
@@ -38,3 +38,18 @@ Current features:
   - Item collections unrelated to your slot are hidden
   - Receiving an item highlights yellow
   - Hints for your locations are cyan
+
+## TODO
+
+- Add difficulty gating options (items for either increasing allowed difficulty, or for allowing specific difficulties)
+- Add option to disable track gating, provided difficulty gating is enabled
+- Add option to remove checks for playing tracks, provided track gating is off (if track gating is on there won't be enough locations)
+- Add option to remove specific tracks (auto-resolve issues when too many tracks are removed)
+- Add option to disable base game tracks (needs checks to make sure enough tracks exist as DLC is all difficulty 6-9)
+- Add more goal options (beat all max_diff tracks, beat longest track in each difficulty)
+- Add MacGuffin option (require 10 hot dog items then beating Eine Champ track, based on lore)
+- Add Deathlink support (failing to beat a track sends a death, receiving a death negates your next track entry)
+- Add chat entry box
+- Display internal errors in the chat view (such as losing connection)
+- Track list sorting options (alphabetical, difficulty, availability, hinted)
+- Have client infer track list from location lists rather than settings
