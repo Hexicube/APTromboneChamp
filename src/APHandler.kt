@@ -191,6 +191,7 @@ class APConnectionManager : WebSocket.Listener {
                         val checkedLocations = data.get("checked_locations").asJsonArray.map { it.asLong }
                         MainFrame.LOCS.clear()
                         MainFrame.LOCS.addAll(checkedLocations)
+                        hintCost = (missingLocations.size + checkedLocations.size) * hintCost / 100
                         val slotData = data.get("slot_data").asJsonObject
                         MainFrame.SETTINGS.goalTracks = slotData.get("goal").asInt
                         MainFrame.SETTINGS.goalRating = slotData.get("rating").asInt
