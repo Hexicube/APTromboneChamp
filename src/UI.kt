@@ -243,7 +243,7 @@ class HintLabel(prefix: String) : JPanel() {
             toolTipText = null
         }
         else {
-            hintText.text = "${data.getFinderName()}'s world"
+            hintText.text = "${data.getFinderName()}'s World"
             toolTipText = "${data.getFinderName()}'s ${data.getItemLoc()}"
         }
     }
@@ -258,8 +258,8 @@ class HintLabel(prefix: String) : JPanel() {
             toolTipText = null
         }
         else {
-            hintText.text = "${data.getReceiverName()}'s world"
-            toolTipText = "${data.getReceiverName()}'s ${data.getItemName()}"
+            hintText.text = "${data.getReceiverName()}'s ${data.status.text}"
+            toolTipText = "${data.getReceiverName()}'s ${data.getItemName()} (${data.status.text})"
         }
     }
 }

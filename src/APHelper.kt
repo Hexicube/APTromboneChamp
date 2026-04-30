@@ -87,12 +87,12 @@ data class APNetworkVersion(val major: Int, val minor: Int, val build: Int) {
     }
 }
 
-enum class HintStatus(val id: Int) {
-    UNSPECIFIED(0),
-    FILLER(10),
-    TRAP(20),
-    PRIORITY(30),
-    FOUND(40);
+enum class HintStatus(val id: Int, val text: String) {
+    UNSPECIFIED(0, "UNSPECIFIED"),
+    FILLER(10, "Filler Item"),
+    TRAP(20, "Trap"),
+    PRIORITY(30, "Priority Item"),
+    FOUND(40, "Found Item");
     companion object {
         fun fromID(id: Int) = entries.first { it.id == id }
     }

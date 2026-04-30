@@ -266,7 +266,14 @@ class APConnectionManager : WebSocket.Listener {
                         }
                     }
                     "RoomUpdate" -> {
-                        println(data)
+                        // print it if theres something new
+                        val keys = ArrayList(data.keySet())
+                        keys.remove("type")
+                        keys.remove("hint_points")
+                        keys.remove("players")
+                        keys.remove("checked_locations")
+                        if (keys.isNotEmpty()) println(data)
+
                         var needsHintUpdate = false
                         if (data.has("hint_points")) hintPoints = data.get("hint_points").asInt
                         if (data.has("players")) {
@@ -284,9 +291,6 @@ class APConnectionManager : WebSocket.Listener {
                         }
 
                         if (needsHintUpdate) MainFrame.updateHints()
-
-                        // TODO: checked_locations contains NEWLY CHECKED locations (look for it here rather than when entering a location, then check goaling here?)
-                        // handling this would also properly deal with goaling, as it will contain all remaining locations
                     }
                     "PrintJSON" -> {
                         val type = data.get("type")?.asString ?: ""
@@ -297,6 +301,10 @@ class APConnectionManager : WebSocket.Listener {
                                 // add the hint if it applies to this player
                                 val receiver = data.get("receiving").asInt
                                 val itemData = data.get("item").asJsonObject
+                                val hintTextPiece = data.get("data").asJsonArray.firstNotNullOfOrNull {
+                                    val obj = it.asJsonObject
+                                    if (obj.has("hint_status")) obj.get("hint_status").asInt else null
+                                } ?: 0
                                 val hint = Hint(
                                     receiver,
                                     itemData.get("player").asInt,
@@ -304,7 +312,7 @@ class APConnectionManager : WebSocket.Listener {
                                     itemData.get("item").asLong,
                                     data.get("found").asBoolean,
                                     itemData.get("flags").asInt,
-                                    HintStatus.UNSPECIFIED // is inside the text
+                                    HintStatus.fromID(hintTextPiece)
                                 )
                                 if (hint.findingPlayer == thisSlot || hint.receivingPlayer == thisSlot) {
                                     hints.removeIf {
@@ -328,7 +336,10 @@ class APConnectionManager : WebSocket.Listener {
                                             "item_id" -> text.append("<span style='color:red'>${slotItemMap[slotList[hint.receivingPlayer]?.game]?.get(str.toLong()) ?: "ITEM:$str"}</span>")
                                             "location_id" -> text.append("<span style='color:green'>${slotLocMap[slotList[hint.findingPlayer]?.game]?.get(str.toLong()) ?: "LOC:$str"}</span>")
                                             "hint_status" -> text.append("<span style='color:purple'>$str</span>")
-                                            else -> println("Unknown type inside PrintJSON(Hint): $subtype")
+                                            else -> {
+                                                println("Unknown type inside PrintJSON(Hint): $subtype")
+                                                println(data) // entrance_name
+                                            }
                                         }
                                     }
                                     MainFrame.addChatMessage(text.toString(), Color(.8f, 1f, 1f))
@@ -364,7 +375,7 @@ class APConnectionManager : WebSocket.Listener {
                                 MainFrame.addChatMessage(text.toString(), if (isForThisSlot) Color(1f, 1f, .5f) else Color.WHITE)
                                 continue
                             }
-                            "", "Chat", "Join", "Part", "Goal", "Collect", "Release" -> {} // general chat or messages with no components
+                            "", "Chat", "Join", "Part", "Goal", "Collect", "Release", "TagsChanged" -> {} // general chat or messages with no components
                             "Countdown" -> {
                                 // avoid double-printing first number
                                 if (data.get("data").asJsonArray[0].asJsonObject.get("text").asString.contains("Starting")) continue
