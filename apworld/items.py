@@ -9,7 +9,35 @@ if TYPE_CHECKING:
 ITEM_NAME_TO_ID = {
     "Rank Reduction": 1001,
     "Nothing": 1002,
-    "Fun Fact": 1003
+    "Fun Fact": 1003,
+    "Hot Dog": 1004,
+    "Progressive Difficulty": 1011,
+    "Difficulty 2": 1012,
+    "Difficulty 3": 1013,
+    "Difficulty 4": 1014,
+    "Difficulty 5": 1015,
+    "Difficulty 6": 1016,
+    "Difficulty 7": 1017,
+    "Difficulty 8": 1018,
+    "Difficulty 9": 1019,
+    "Difficulty 10": 1020,
+}
+
+ITEM_CLASS = {
+    "Rank Reduction": ItemClassification.progression | ItemClassification.useful,
+    "Nothing": ItemClassification.filler,
+    "Fun Fact": ItemClassification.filler,
+    "Hot Dog": ItemClassification.progression | ItemClassification.useful,
+    "Progressive Difficulty": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 2": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 3": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 4": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 5": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 6": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 7": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 8": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 9": ItemClassification.progression | ItemClassification.useful,
+    "Difficulty 10": ItemClassification.progression | ItemClassification.useful,
 }
 
 for track in tracks.TRACK_LIST:
@@ -23,10 +51,8 @@ def get_random_filler_item_name(world: APTromboneWorld) -> str:
 
 def create_item_with_correct_classification(world: APTromboneWorld, name: str) -> APTromboneItem:
     classification = ItemClassification.progression
-    if name == "Nothing" or name == "Fun Fact":
-        classification = ItemClassification.filler
-    if name == "Rank Reduction":
-        classification |= ItemClassification.useful
+    if name in ITEM_CLASS:
+        classification = ITEM_CLASS[name]
     item = APTromboneItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
     return item
 

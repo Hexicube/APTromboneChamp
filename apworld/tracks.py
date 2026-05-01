@@ -141,14 +141,9 @@ TRACK_LIST = [
 ]
 
 def get_track_list(world):
-    min_diff = world.options.min_diff
-    max_diff = world.options.max_diff
-    # force max diff up if needed
-    if max_diff <= min_diff:
-        print("NOTE: Max diff " + str(max_diff) + " is too low, increasing to " + str(min_diff + 1))
-        max_diff = min_diff + 1
-        world.options.max_diff.value = max_diff
-        
+    min_diff = world.options.min_diff.value
+    max_diff = world.options.max_diff.value
+    excludes = world.options.removed_tracks.value
     
     unsafe = world.options.unsafe
     celeste = world.options.celeste
@@ -162,6 +157,7 @@ def get_track_list(world):
         if track["DLC"] == "Celeste" and not celeste: continue
         if track["DLC"] == "Pizza Tower" and not pizza: continue
         if track["DLC"] == "Toby Fox" and not toby: continue
+        if track["name"] in excludes: continue
         tracks.append(track)
     return tracks
 
@@ -169,24 +165,28 @@ def get_hardest_tracks(world):
     max_diff = world.options.max_diff
     track_list = get_track_list(world)
     new_list = []
-    while not new_list:
-        for track in track_list:
-            if track["stars"] == max_diff:
-                new_list.append(track)
-        max_diff = max_diff - 1
+    for track in track_list:
+        if track["stars"] == max_diff:
+            new_list.append(track)
     return new_list
 
 def get_easiest_tracks(world, required):
-    tracks = []
-    cur_diff = world.options.min_diff
+    min_diff = world.options.min_diff
     track_list = get_track_list(world)
-    while len(tracks) < required:
-        for track in track_list:
-            if track["stars"] == cur_diff:
-                tracks.append(track)
-        cur_diff = cur_diff + 1
-        if cur_diff > 10: return tracks # should never happen
-    return tracks
+    new_list = []
+    for track in track_list:
+        if track["stars"] == min_diff:
+            new_list.append(track)
+    return new_list
+
+def get_goal_track(world):
+    goal_track = world.options.goal_track.value
+    if goal_track == "none":
+        return None
+    for track in TRACK_LIST:
+        if track["name"] == goal_track:
+            return track
+    raise OptionError(f"Unknown goal track {goal_track}")
 
 def make_group():
     tracks = []

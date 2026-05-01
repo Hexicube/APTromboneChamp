@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle
+from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, TextChoice, OptionList
+from . import tracks
 
 # https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/options%20api.md
 
@@ -9,13 +10,28 @@ from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle
 class GoalTracks(Range):
     """
     How many tracks need to be beaten to goal.
-    If set to 0, the goal is instead to beat the longest, hardest track.
+    If set to 0, the goal is instead to beat the goal track specified.
     Will cap at the total number of tracks.
     """
-    display_name = "Goal Tracks"
+    display_name = "Goal Tracks Count"
     range_start = 0
     range_end = 200
     default = 10
+
+class GoalTrack(TextChoice):
+    """
+    Determines which track is the goal track.
+    Must be set if goal tracks count is 0.
+    Does nothing if goal tracks count is above 0.
+    Must be set to a short track name that exists in the track list based on stars settings.
+    """
+    display_name = "Goal Track"
+    option_none = -1
+    #options = tracks.make_dict()
+    default = -1
+
+# TODO: GoalHotDogs(Range) - how many Hot Dog items are required before the goal track is playable
+# requires goal track to be set to matter
 
 class GoalRating(Choice):
     """
@@ -31,6 +47,7 @@ class GoalRating(Choice):
 class InitialRating(Choice):
     """
     Initial required rating to beat tracks, Rating Reduction items are created to allow this to match Goal Rating.
+    Must be larger than or equal to goal rating.
     """
     display_name = "Initial Rating Required"
     option_C = 0
@@ -58,6 +75,15 @@ class FunFacts(Range):
     range_start = 0
     range_end = 200
     default = 0
+
+# TODO: gating options
+
+# TrackGating(DefaultOnToggle) - when disabled tracks do not need an item
+
+# DifficultyGating(Choice) - when enabled difficulties require items
+# - Off: no difficulty gating
+# - On: per-difficulty gating
+# - Progressive: start at min_diff and each progressive allows going up one difficulty
 
 # track selection options
 
@@ -110,11 +136,23 @@ class IncludeTobyFox(Toggle):
     """
     display_name = "Toby Fox DLC"
 
-# items
+class RemovedTracks(OptionList):
+    """
+    A list of tracks to remove after prior filtering.
+    Must not include the goal track if specified.
+    Must not include all tracks of a given star rating.
+    Can include tracks that would be filtered out.
+    """
+    display_name = "Removed Tracks"
+    valid_keys = list(map(lambda t: t["name"], tracks.TRACK_LIST))
+    default = []
+
+# TODO: DisablePlayLocations(Toggle) - when enabled, removes the "Play: X" locations (halves location count)
 
 @dataclass
 class APTromboneOptions(PerGameCommonOptions):
     goal: GoalTracks
+    goal_track: GoalTrack
     rating: GoalRating
     rating_start: InitialRating
     easy_track: EasyTrackStarGap
@@ -126,30 +164,33 @@ class APTromboneOptions(PerGameCommonOptions):
     celeste: IncludeCeleste
     pizza: IncludePizzaTower
     toby: IncludeTobyFox
+    removed_tracks: RemovedTracks
 
 option_groups = [
     OptionGroup(
         "Gameplay Options",
-        [GoalTracks, GoalRating, InitialRating, EasyTrackStarGap, FunFacts],
+        [GoalTracks, GoalTrack, GoalRating, InitialRating, EasyTrackStarGap, FunFacts],
     ),
     OptionGroup(
         "Track Options",
-        [MinDiff, MaxDiff, IncludeUnsafe, IncludeCeleste, IncludePizzaTower, IncludeTobyFox]
+        [MinDiff, MaxDiff, IncludeUnsafe, IncludeCeleste, IncludePizzaTower, IncludeTobyFox, RemovedTracks]
     )
 ]
 
 option_presets = {
     "default": {
         "goal": 10,
+        "goal_track": "",
         "rating": "A",
         "rating_start": "S",
         "easy_track": 3,
-        
+
         "min_diff": 3,
         "max_diff": 7,
         "unsafe": False,
         "celeste": False,
         "pizza": False,
-        "toby": False
+        "toby": False,
+        "removed_tracks": []
     }
 }

@@ -15,7 +15,6 @@ def set_all_rules(world: APTromboneWorld) -> None:
     rating_start = world.options.rating_start.value
     rating_end = world.options.rating.value
     rating_diff = rating_start - rating_end
-    if rating_diff < 0: rating_diff = 0
     
     rating_gap = world.options.easy_track
     
@@ -30,11 +29,9 @@ def set_all_rules(world: APTromboneWorld) -> None:
                 if required > 0:
                     # needs reductions to be considered beatable
                     world.set_rule(world.get_location("Beat: " + track["name"]), Has("Rank Reduction", required))
-        # goal track is always the longest of the hardest tracks
-        longest = hard_tracks[0]
-        for track in hard_tracks:
-            if track["duration"] > longest["duration"]: longest = track
-        world.set_completion_rule(Has(longest["name"]) & Has("Rank Reduction", rating_diff))
+        # set goal rule to specific track
+        goal_track = tracks.get_goal_track(world)
+        world.set_completion_rule(Has(goal_track["name"]) & Has("Rank Reduction", rating_diff))
     else:
         # make sure the goal is possible
         if num_tracks_win > len(track_list):
