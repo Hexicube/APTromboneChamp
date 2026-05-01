@@ -59,7 +59,7 @@ def create_item_with_correct_classification(world: APTromboneWorld, name: str) -
 def create_all_items(world: APTromboneWorld) -> None:
     # find starting track
     
-    easy_tracks = tracks.get_easiest_tracks(world, 1)
+    easy_tracks = tracks.get_easiest_tracks(world)
     shortest = easy_tracks[0]
     for track in easy_tracks:
         if track["duration"] < shortest["duration"]: shortest = track

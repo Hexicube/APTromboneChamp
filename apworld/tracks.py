@@ -170,7 +170,7 @@ def get_hardest_tracks(world):
             new_list.append(track)
     return new_list
 
-def get_easiest_tracks(world, required):
+def get_easiest_tracks(world):
     min_diff = world.options.min_diff
     track_list = get_track_list(world)
     new_list = []

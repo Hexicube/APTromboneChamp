@@ -113,18 +113,17 @@ class APTromboneWorld(World):
         spoiler_handle.write(f"\nTrack List ({len(track_list)}):")
         len_sum = 0
         for track in track_list:
-            name = track["name"]
-            diff = track["stars"]
-            mins = track["duration"] // 60
-            secs = track["duration"] % 60
-            len_sum = len_sum + track["duration"]
-            spoiler_handle.write(f"\n{str(diff).rjust(2)}/10 | {mins}:{secs:02} | {track["fullname"]}")
+            dur = track["duration"]
+            mins = dur // 60
+            secs = dur % 60
+            len_sum += dur
+            spoiler_handle.write(f"\n{str(track["stars"]).rjust(2)}/10 | {mins}:{secs:02} | {track["fullname"]}")
         mins = len_sum // 60
         hrs = mins // 60
         mins = mins - (hrs * 60)
         secs = len_sum % 60
         spoiler_handle.write(f"\nTotal duration: {hrs}:{mins:02}:{secs:02}")
-        easy_tracks = tracks.get_easiest_tracks(self, 1)
+        easy_tracks = tracks.get_easiest_tracks(self)
         shortest = easy_tracks[0]
         for track in easy_tracks:
             if track["duration"] < shortest["duration"]: shortest = track
