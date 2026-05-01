@@ -194,6 +194,9 @@ class APConnectionManager : WebSocket.Listener {
                         hintCost = (missingLocations.size + checkedLocations.size) * hintCost / 100
                         val slotData = data.get("slot_data").asJsonObject
                         MainFrame.SETTINGS.goalTracks = slotData.get("goal").asInt
+                        val goalTrackName = slotData.get("goal_track").asString
+                        if (goalTrackName == "none") MainFrame.SETTINGS.goalTrack = null
+                        else MainFrame.SETTINGS.goalTrack = Track.TRACK_LIST.first { it.name == goalTrackName }
                         MainFrame.SETTINGS.goalRating = slotData.get("rating").asInt
                         MainFrame.SETTINGS.startRating = slotData.get("rating_start").asInt
                         MainFrame.SETTINGS.easyTrackGap = slotData.get("easy_track").asInt
@@ -203,6 +206,9 @@ class APConnectionManager : WebSocket.Listener {
                         MainFrame.SETTINGS.celeste = slotData.get("celeste").asInt == 1
                         MainFrame.SETTINGS.pizza = slotData.get("pizza").asInt == 1
                         MainFrame.SETTINGS.toby = slotData.get("toby").asInt == 1
+                        MainFrame.SETTINGS.removedTracks = slotData.get("removed_tracks").asJsonArray.map { name ->
+                            Track.TRACK_LIST.first { it.name == name.asString }
+                        }
 
                         MainFrame.updateTrackList(Track.getTrackList(MainFrame.SETTINGS))
                         MainFrame.update()

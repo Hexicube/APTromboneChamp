@@ -1,5 +1,6 @@
 data class Settings(
     var goalTracks: Int,
+    var goalTrack: Track?,
     var goalRating: Int,
     var startRating: Int,
     var easyTrackGap: Int,
@@ -8,5 +9,6 @@ data class Settings(
     var unsafe: Boolean,
     var celeste: Boolean,
     var pizza: Boolean,
-    var toby: Boolean
+    var toby: Boolean,
+    var removedTracks: List<Track>
 )

@@ -53,7 +53,10 @@ class MainFrame : JFrame("Tromboner AP Client") {
         val CUR_FACTS = ArrayList<String>()
 
         val SETTINGS = Settings(
-            0, 3, 3, 2, 1, 10, true, true, true, true
+            1, null, 3,
+            3, 2, 1, 10,
+            true, true, true, true,
+            emptyList()
         )
 
         var trackList = Track.getTrackList(SETTINGS)

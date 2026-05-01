@@ -32,7 +32,7 @@ class APTromboneWorld(World):
         rating_end = self.options.rating.value
         if rating_start < rating_end:
             raise OptionError(f"rating_start({rating_start}) is below rating({rating_end})")
-        # convert goal track name to name
+        # convert goal track id to name
         goal_track_value = self.options.goal_track.value
         if isinstance(goal_track_value, int) or goal_track_value.isdigit():
             ID = int(goal_track_value)

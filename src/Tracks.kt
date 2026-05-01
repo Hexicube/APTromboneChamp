@@ -141,7 +141,8 @@ data class Track(
                     (track.DLC == "Celeste" && settings.celeste) ||
                     (track.DLC == "Pizza Tower" && settings.pizza) ||
                     (track.DLC == "Toby Fox" && settings.toby)
-                )
+                ) &&
+                !settings.removedTracks.contains(track)
             }
         }
 
@@ -153,7 +154,7 @@ data class Track(
 
         public fun getGoalTrack(settings: Settings): Track? {
             if (settings.goalTracks > 0) return null
-            return getHardest(settings).maxBy { it.len }
+            return settings.goalTrack
         }
     }
 }

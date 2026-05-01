@@ -12,16 +12,18 @@ Current features:
 
 World options:
 - goal: 0 for longest track with difficulty matching max_diff, or above 0 for beating that many tracks (auto-limits to number of tracks available)
+- goal_track: When goal is 0, specifies which track is the goal track
 - rating: required rating to beat a track (C to S)
 - rating_start: initial rating required to beat a track (C to S), Rank Reduction items are created to cover the difference between this and rating
 - easy_track: how many difficulty steps easier than max_diff per increase in required rank (rank A increases to S if this many difficulties below max_diff, B increases to S at double this, etc.), 0 to disable
 - fun_facts: how many Nothing filler items to replace with Fun Fact items, which say one of the game's fun facts in chat (auto-limits to number of fillers)
 - min_diff: minimum track difficulty to include (1-9), the starting track will be the shortest track of this difficulty
-- max_diff: maximum track difficulty to include (2-10) (auto-increases to be above min_diff)
+- max_diff: maximum track difficulty to include (2-10)
 - unsafe: if enabled, includes tracks marked as stream-unsafe (Hungarian Dance, Stars & Stripes, W. Post March)
 - celeste: if enabled, includes the Celeste DLC tracks (requires unsafe)
 - pizza: if enabled, includes the Pizza Tower DLC tracks (requires unsafe)
 - toby: if enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
+- removed_tracks: a list of tracks to remove (both items and locations)
 
 ## Manual Client
 
