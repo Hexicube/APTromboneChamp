@@ -19,6 +19,8 @@ class APConnectionManager : WebSocket.Listener {
     private var thisTeam = -1
     var thisSlot = -1
 
+    var lastFunFact: Long = System.currentTimeMillis()
+
     /*
     Connection handshake:
     - Client connects
@@ -246,14 +248,17 @@ class APConnectionManager : WebSocket.Listener {
                             val track = MainFrame.trackList.firstOrNull { it.ID == item.item }
                             if (track != null) MainFrame.trackEntries[track]?.update()
                             // index=0 means the client just connected (always appears due to starter item)
-                            if (item.item == 1003L && index != 0) {
-                                // fun fact item
-                                if (MainFrame.CUR_FACTS.isEmpty()) {
-                                    MainFrame.CUR_FACTS.addAll(MainFrame.ALL_FACTS)
-                                    MainFrame.CUR_FACTS.shuffle()
+                            if (item.item == 1003L && index != 0) { // fun fact item
+                                val now = System.currentTimeMillis()
+                                if (now - lastFunFact > 1000L) { // prevent spamming when multiple are found at once
+                                    lastFunFact = now
+                                    if (MainFrame.CUR_FACTS.isEmpty()) {
+                                        MainFrame.CUR_FACTS.addAll(MainFrame.ALL_FACTS)
+                                        MainFrame.CUR_FACTS.shuffle()
+                                    }
+                                    val fact = MainFrame.CUR_FACTS.removeAt(0)
+                                    sendChat("FUN FACT: $fact")
                                 }
-                                val fact = MainFrame.CUR_FACTS.removeAt(0)
-                                sendChat("FUN FACT: $fact")
                             }
                         }
                         MainFrame.update()
