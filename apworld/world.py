@@ -84,7 +84,7 @@ class APTromboneWorld(World):
         # TODO: add hotdog macguffin items when added
         if num_locs < num_items:
             raise OptionError(f"Settings are too restrictive, location count {num_locs} is below item count {num_items}")
-        raise OptionError(list(map(lambda t: t["name"], track_list)))
+        #raise OptionError(list(map(lambda t: t["name"], track_list)))
 
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
@@ -104,8 +104,8 @@ class APTromboneWorld(World):
 
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict(
-            "goal", "rating", "rating_start", "easy_track", "fun_facts",
-            "min_diff", "max_diff", "unsafe", "celeste", "pizza", "toby"
+            "goal", "goal_track", "rating", "rating_start", "easy_track", "fun_facts",
+            "min_diff", "max_diff", "unsafe", "celeste", "pizza", "toby", "removed_tracks"
         )
     
     def write_spoiler(self, spoiler_handle: TextIO) -> None:
@@ -132,11 +132,8 @@ class APTromboneWorld(World):
         
         num_tracks_win = self.options.goal.value
         if num_tracks_win == 0:
-            hard_tracks = tracks.get_hardest_tracks(self)
-            longest = hard_tracks[0]
-            for track in hard_tracks:
-                if track["duration"] > longest["duration"]: longest = track
-            spoiler_handle.write("\nGoal Track: " + longest["fullname"])
+            goal_track = tracks.get_goal_track(self)
+            spoiler_handle.write("\nGoal Track: " + goal_track["fullname"])
         else:
             if num_tracks_win > len(track_list): num_tracks_win = len(track_list)
-            spoiler_handle.write("\nGoal Track Count: " + str(num_tracks_win))
+            spoiler_handle.write("\nGoal Tracks Count: " + str(num_tracks_win))
