@@ -180,7 +180,7 @@ option_groups = [
 option_presets = {
     "default": {
         "goal": 10,
-        "goal_track": "",
+        "goal_track": "none",
         "rating": "A",
         "rating_start": "S",
         "easy_track": 3,
