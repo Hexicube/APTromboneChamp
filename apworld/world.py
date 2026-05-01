@@ -110,7 +110,7 @@ class APTromboneWorld(World):
     
     def write_spoiler(self, spoiler_handle: TextIO) -> None:
         track_list = tracks.get_track_list(self)
-        spoiler_handle.write("\nTrack List (" + str(len(track_list)) + "):")
+        spoiler_handle.write(f"\nTrack List ({len(track_list)}):")
         len_sum = 0
         for track in track_list:
             name = track["name"]
@@ -118,22 +118,22 @@ class APTromboneWorld(World):
             mins = track["duration"] // 60
             secs = track["duration"] % 60
             len_sum = len_sum + track["duration"]
-            spoiler_handle.write("\n" + str(diff).rjust(2) + "/10 | " + str(mins) + ":" + f"{secs:02}" + " | " + track["fullname"])
+            spoiler_handle.write(f"\n{str(diff).rjust(2)}/10 | {mins}:{secs:02} | {track["fullname"]}")
         mins = len_sum // 60
         hrs = mins // 60
         mins = mins - (hrs * 60)
         secs = len_sum % 60
-        spoiler_handle.write("\nTotal duration: " + str(hrs) + ":" + f"{mins:02}" + ":" + f"{secs:02}")
+        spoiler_handle.write(f"\nTotal duration: {hrs}:{mins:02}:{secs:02}")
         easy_tracks = tracks.get_easiest_tracks(self, 1)
         shortest = easy_tracks[0]
         for track in easy_tracks:
             if track["duration"] < shortest["duration"]: shortest = track
-        spoiler_handle.write("\nStarting Track: " + shortest["fullname"])
+        spoiler_handle.write(f"\nStarting Track: {shortest["fullname"]}")
         
         num_tracks_win = self.options.goal.value
         if num_tracks_win == 0:
             goal_track = tracks.get_goal_track(self)
-            spoiler_handle.write("\nGoal Track: " + goal_track["fullname"])
+            spoiler_handle.write(f"\nGoal Track: {goal_track["fullname"]}")
         else:
             if num_tracks_win > len(track_list): num_tracks_win = len(track_list)
-            spoiler_handle.write("\nGoal Tracks Count: " + str(num_tracks_win))
+            spoiler_handle.write(f"\nGoal Tracks Count: ${num_tracks_win}")
