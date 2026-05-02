@@ -143,7 +143,7 @@ class APConnectionManager : WebSocket.Listener {
                         val gameList = data.get("games").asJsonArray.map { it.asString }
                         if (!gameList.contains(GAME_NAME)) {
                             println("[ERR ] Room does not contains this game")
-                            JOptionPane.showMessageDialog(null, "Room does not contain this game.", "Game not in room", JOptionPane.ERROR_MESSAGE)
+                            JOptionPane.showMessageDialog(MainFrame.INST, "Room does not contain this game.", "Game not in room", JOptionPane.ERROR_MESSAGE)
                             disconnect()
                             continue
                         }
@@ -162,22 +162,22 @@ class APConnectionManager : WebSocket.Listener {
                         val errors = data.get("errors").asJsonArray.map { it.asString }
                         println("ConnectionRefused: ${errors.joinToString()}")
                         if (errors.contains("InvalidSlot")) {
-                            JOptionPane.showMessageDialog(null, "Room does not contain slot \"${MainFrame.connectSlot.text}\".", "Slot not in room", JOptionPane.ERROR_MESSAGE)
+                            JOptionPane.showMessageDialog(MainFrame.INST, "Room does not contain slot \"${MainFrame.connectSlot.text}\".", "Slot not in room", JOptionPane.ERROR_MESSAGE)
                         }
                         else if (errors.contains("InvalidGame")) {
-                            JOptionPane.showMessageDialog(null, "Slot \"${MainFrame.connectSlot.text}\" is not for this game.", "Slot wrong", JOptionPane.ERROR_MESSAGE)
+                            JOptionPane.showMessageDialog(MainFrame.INST, "Slot \"${MainFrame.connectSlot.text}\" is not for this game.", "Slot wrong", JOptionPane.ERROR_MESSAGE)
                         }
                         else if (errors.contains("IncompatibleVersion")) {
-                            JOptionPane.showMessageDialog(null, "Version mismatch.", "Bad version", JOptionPane.ERROR_MESSAGE)
+                            JOptionPane.showMessageDialog(MainFrame.INST, "Version mismatch.", "Bad version", JOptionPane.ERROR_MESSAGE)
                         }
                         else if (errors.contains("InvalidPassword")) {
-                            JOptionPane.showMessageDialog(null, "Wrong password.", "Bad password", JOptionPane.ERROR_MESSAGE)
+                            JOptionPane.showMessageDialog(MainFrame.INST, "Wrong password.", "Bad password", JOptionPane.ERROR_MESSAGE)
                         }
                         else if (errors.contains("InvalidItemsHandling")) {
-                            JOptionPane.showMessageDialog(null, "Client incompatible with room item handling.", "Bad item handling", JOptionPane.ERROR_MESSAGE)
+                            JOptionPane.showMessageDialog(MainFrame.INST, "Client incompatible with room item handling.", "Bad item handling", JOptionPane.ERROR_MESSAGE)
                         }
                         else {
-                            JOptionPane.showMessageDialog(null, "Unknown error: \"${errors.joinToString()}\".", "Unknown error", JOptionPane.ERROR_MESSAGE)
+                            JOptionPane.showMessageDialog(MainFrame.INST, "Unknown error: \"${errors.joinToString()}\".", "Unknown error", JOptionPane.ERROR_MESSAGE)
                         }
                         disconnect()
                     }
@@ -545,7 +545,6 @@ class APConnectionManager : WebSocket.Listener {
         obj.add("version", AP_VERSION.toJson())
         obj.add("items_handling", JsonPrimitive(0b111)) // needs to receive own items
         val arr = JsonArray()
-        //arr.add("NoText") // disables INCOMING text, outgoing still works (Fun Fact item uses this)
         obj.add("tags", arr)
         obj.add("slot_data", JsonPrimitive(true))
         sendPacket(obj)
