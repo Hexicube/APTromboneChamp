@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from BaseClasses import Entrance, Region
-from rule_builder.rules import Has, And
+from rule_builder.rules import Has
 from . import tracks
 
 if TYPE_CHECKING:
@@ -23,6 +23,6 @@ def create_and_connect_regions(world: APTromboneWorld) -> None:
         end_region = Region("Track: " + track["name"], world.player, world.multiworld)
         world.multiworld.regions += [end_region]
         if hot_dogs > 0 and track == goal_track:
-            world.create_entrance(diff_regions[track["stars"]], end_region, And(Has(track["name"]), Has("Hot Dog", hot_dogs)))
+            world.create_entrance(diff_regions[track["stars"]], end_region, Has(track["name"]) & Has("Hot Dog", hot_dogs))
         else:
             world.create_entrance(diff_regions[track["stars"]], end_region, Has(track["name"]))

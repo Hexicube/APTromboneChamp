@@ -88,7 +88,7 @@ class FunFacts(Range):
 class HotDogs(Range):
     """
     Hot many Hot Dog items are required to unlock the goal track.
-    Does nothing is goal tracks count is above 0.
+    Does nothing if goal tracks count is above 0.
     """
     display_name = "Hot Dogs"
     range_start = 0
