@@ -135,7 +135,7 @@ TRACK_LIST = [
     track(316, "Scarlet Forest", "Scarlet Forest", 6, 2 * 60 + 12, True, "Toby Fox"),
     track(317, "Sword", "Sword", 7, 1 * 60 + 50, True, "Toby Fox"),
     track(318, "Third Sanctuary", "The Third Sanctuary", 9, 4 * 60 + 8, True, "Toby Fox"),
-    track(319, "True Hero", "True Hero", 8, 2 * 60 + 36, True, "Toby Fox"),
+    track(319, "True Hero", "Battle Against a True Hero", 8, 2 * 60 + 36, True, "Toby Fox"),
     track(320, "TV World", "TV World", 7, 2 * 60 + 12, True, "Toby Fox"),
     track(321, "World Revolving", "The World Revolving", 8, 1 * 60 + 44, True, "Toby Fox"),
 ]

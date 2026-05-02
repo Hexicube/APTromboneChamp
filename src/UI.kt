@@ -212,7 +212,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
             for (track in tracks) {
                 if (getTrackStatus(track.ID) != TrackStatus.BEATEN) scrollContents.add(trackEntries[track])
             }
-            scrollContents.invalidate()
+            scrollContents.revalidate()
             scrollContents.repaint()
         }
 
@@ -314,7 +314,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
 class TrackSortOrderList : JList<String>(dataModel) {
     companion object {
-        val OPTS = listOf("DLC", "Name", " Difficulty ", "Status")
+        val OPTS = listOf("DLC", "Name", "Difficulty", "Status")
         val dataModel = DefaultListModel<String>()
         init {
             dataModel.addAll(OPTS)

@@ -180,6 +180,7 @@ class APConnectionManager : WebSocket.Listener {
                             JOptionPane.showMessageDialog(MainFrame.INST, "Unknown error: \"${errors.joinToString()}\".", "Unknown error", JOptionPane.ERROR_MESSAGE)
                         }
                         disconnect()
+                        break
                     }
                     "Connected" -> {
                         if (connectionState != 2) {
@@ -390,7 +391,7 @@ class APConnectionManager : WebSocket.Listener {
                                     }
                                 }
                                 // temporary: filter out anything not for us or from us (make this a toggle)
-                                if (!isForThisSlot && !isFromThisSlot) return null
+                                if (!isForThisSlot && !isFromThisSlot) continue
                                 MainFrame.addChatMessage(text.toString(), if (isForThisSlot) Color(1f, 1f, .5f) else Color.WHITE)
                                 continue
                             }
