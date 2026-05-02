@@ -77,6 +77,7 @@ class APConnectionManager : WebSocket.Listener {
     }
 
     fun findOwnHintItem(item: Long) = hints.firstOrNull { it.receivingPlayer == thisSlot && it.item == item }
+    fun findOwnHintItemList(item: Long) = hints.filter { it.receivingPlayer == thisSlot && it.item == item }
     fun findOwnHintLoc(loc: Long) = hints.firstOrNull { it.findingPlayer == thisSlot && it.location == loc }
 
     fun connect(uri: String, secure: Boolean = true) {
@@ -212,7 +213,7 @@ class APConnectionManager : WebSocket.Listener {
                             Track.TRACK_LIST.first { it.name == name.asString }
                         }
 
-                        MainFrame.updateTrackList(Track.getTrackList(MainFrame.SETTINGS))
+                        MainFrame.updateAllEntries(Track.getTrackList(MainFrame.SETTINGS))
                         MainFrame.update()
 
                         //playerMap.clear()

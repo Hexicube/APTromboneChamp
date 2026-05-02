@@ -1,24 +1,22 @@
 import java.awt.Color
-import java.awt.Component
 import java.awt.Dimension
 import java.awt.Font
-import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.net.URI
 import javax.swing.*
 import javax.swing.border.CompoundBorder
 import javax.swing.border.EmptyBorder
 import javax.swing.border.LineBorder
-import javax.swing.table.AbstractTableModel
-import javax.swing.table.DefaultTableCellRenderer
 
 fun main() {
     MainFrame()
 }
 
-enum class TrackStatus {
-    LOCKED, AVAILABLE, PLAYED, BEATEN
+enum class TrackStatus(val sortOrder: Int) {
+    LOCKED(3),
+    AVAILABLE(0),
+    PLAYED(1),
+    BEATEN(2)
 }
 
 class MainFrame : JFrame("Tromboner AP Client") {
@@ -126,33 +124,61 @@ class MainFrame : JFrame("Tromboner AP Client") {
         fun update() {
             //TABLE.revalidate()
             //TABLE.repaint()
-            val target = getCurRatingTarget()
-            val chars = listOf("C", "B", "A", "S")
-            neededRating.text = "Target Rating: " + chars[target]
-            if (target != SETTINGS.goalRating) neededRating.text += "(${chars[SETTINGS.goalRating]})"
+            neededRating.text = "Target Rating: ${listOf("C", "B", "A", "S")[getCurRatingTarget()]}"
 
             val goalTrack = Track.getGoalTrack(SETTINGS)
             goalTarget.text = if (goalTrack != null) "Goal: " + goalTrack.name
             else "Goal: ${trackList.count { getTrackStatus(it.ID) == TrackStatus.BEATEN }}/${SETTINGS.goalTracks}(${trackList.size}) tracks"
 
+            for (entry in pinnedEntries) entry.update()
             for (entry in trackEntries) entry.value.update()
         }
 
+        val pinnedEntries = emptyList<HintableEntry>().toMutableList()
         val trackEntries = emptyMap<Track, TrackEntry>().toMutableMap()
-        fun updateTrackList(tracks: List<Track>) {
+        fun updateAllEntries(tracks: List<Track>) {
             // happens when connecting
+            val diffNeeded = SETTINGS.startRating - SETTINGS.goalRating
+            if (diffNeeded > 0) pinnedEntries.add(object : DifficultyReductionEntry("Rank Reduction", 1001L) {
+                override fun getItemTotal() = diffNeeded
+            })
+
+            // TODO: difficulty gating items
+
+            // TODO: hot dogs
+
             trackList = tracks
             trackEntries.clear()
-            scrollContents.removeAll()
             for (track in tracks) {
                 val entry = TrackEntry(track)
                 trackEntries[track] = entry
-                scrollContents.add(entry)
             }
+            sortTrackList()
+        }
+
+        fun sortTrackList() {
+            scrollContents.removeAll()
+            for (entry in pinnedEntries) scrollContents.add(entry)
+            val tracks = trackEntries.keys.sortedWith { a, b ->
+                var diff = 0
+                for (type in TrackSortOrderList.dataModel.elements()) {
+                    diff = when (type) {
+                        "DLC" -> a.DLC.compareTo(b.DLC)
+                        "Name" -> a.name.compareTo(b.name)
+                        "Difficulty" -> a.diff.compareTo(b.diff)
+                        "Status" -> getTrackStatus(a.ID).sortOrder.compareTo(getTrackStatus(b.ID).sortOrder)
+                        else -> 0
+                    }
+                    if (diff != 0) break
+                }
+                diff
+            }
+            for (track in tracks) scrollContents.add(trackEntries[track])
         }
 
         fun updateHints() {
             // separate update function for just hints as they separately send data
+            for (entry in pinnedEntries) entry.updateHints()
             for (entry in trackEntries) entry.value.updateHints()
         }
 
@@ -161,9 +187,19 @@ class MainFrame : JFrame("Tromboner AP Client") {
             val panel = JPanel()
             panel.background = bg
             panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-            panel.add(TrackEntry.makeSpacer())
+            panel.add(HintableEntry.makeSpacer())
             panel.add(JLabel("<html><body style='width:215px;color:black'>$message</body></html>"))
             chatHistoryPane.add(panel, 0)
+        }
+
+        fun horizAlignText(text: JLabel): JPanel {
+            val panel = JPanel()
+            panel.isOpaque = false
+            panel.layout = BoxLayout(panel, BoxLayout.X_AXIS)
+            panel.add(Box.createHorizontalGlue())
+            panel.add(text)
+            panel.add(Box.createHorizontalGlue())
+            return panel
         }
     }
 
@@ -194,6 +230,13 @@ class MainFrame : JFrame("Tromboner AP Client") {
             CONN.connect("${connectIP.text}:${connectPort.text}")
         }
 
+        content.add(Box.createVerticalStrut(5))
+
+        content.add(horizAlignText(JLabel("Sort Order")))
+        content.add(TrackSortOrderList())
+
+        content.add(Box.createVerticalStrut(5))
+
         val mainPane = JPanel()
         mainPane.layout = BoxLayout(mainPane, BoxLayout.X_AXIS)
 
@@ -205,9 +248,14 @@ class MainFrame : JFrame("Tromboner AP Client") {
         scrollContents.layout = BoxLayout(scrollContents, BoxLayout.Y_AXIS)
         scrollPane.verticalScrollBar.unitIncrement = 15
 
-        content.add(neededRating)
-        content.add(goalTarget)
-        // TODO: other info? number of reductions expected to exist?
+        content.add(Box.createVerticalStrut(5))
+
+        // TODO: info about gating
+        // TODO: number of hot dogs
+        content.add(horizAlignText(neededRating)) // TODO: show hint info and double-click to hint (put this in the track list pinned to the top?)
+        content.add(horizAlignText(goalTarget))
+
+        content.add(Box.createVerticalStrut(5))
 
         chatHistoryScroll.horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
         chatHistoryScroll.verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
@@ -221,6 +269,51 @@ class MainFrame : JFrame("Tromboner AP Client") {
         pack()
         defaultCloseOperation = EXIT_ON_CLOSE
         isVisible = true
+    }
+}
+
+class TrackSortOrderList : JList<String>(dataModel) {
+    companion object {
+        val OPTS = listOf("DLC", "Name", " Difficulty ", "Status")
+        val dataModel = DefaultListModel<String>()
+        init {
+            dataModel.addAll(OPTS)
+        }
+    }
+
+    init {
+        val listener = TrackSortOrderListListener(this)
+        addMouseListener(listener)
+        addMouseMotionListener(listener)
+        layoutOrientation = HORIZONTAL_WRAP
+        visibleRowCount = 1
+    }
+}
+
+class TrackSortOrderListListener(private val list: TrackSortOrderList) : MouseAdapter() {
+    private var pressIdx = -1
+    private var releaseIdx = -1
+
+    override fun mousePressed(e: MouseEvent?) {
+        if (e == null) return
+        pressIdx = list.locationToIndex(e.point)
+    }
+
+    override fun mouseReleased(e: MouseEvent?) {
+        if (e == null) return
+        releaseIdx = list.locationToIndex(e.point)
+        if (pressIdx != releaseIdx && pressIdx != -1 && releaseIdx != -1) {
+            val entry = TrackSortOrderList.dataModel.elementAt(pressIdx)
+            TrackSortOrderList.dataModel.removeElementAt(pressIdx)
+            TrackSortOrderList.dataModel.insertElementAt(entry, releaseIdx)
+            MainFrame.sortTrackList()
+        }
+    }
+
+    override fun mouseDragged(e: MouseEvent?) {
+        if (e == null) return
+        mouseReleased(e)
+        pressIdx = releaseIdx
     }
 }
 
@@ -267,7 +360,10 @@ class HintLabel(prefix: String) : JPanel() {
     }
 }
 
-class TrackEntry(val track: Track) : JPanel() {
+abstract class HintableEntry : JPanel() {
+    abstract fun update()
+    abstract fun updateHints()
+
     companion object {
         fun titleText(text: String): JLabel {
             val label = JLabel(text)
@@ -284,6 +380,92 @@ class TrackEntry(val track: Track) : JPanel() {
         }
     }
 
+    init {
+        isOpaque = true
+        border = CompoundBorder(LineBorder(Color.BLACK, 1, false), EmptyBorder(0, 2, 2, 2))
+        layout = BoxLayout(this, BoxLayout.Y_AXIS)
+    }
+}
+
+abstract class DifficultyReductionEntry(val itemName: String, val itemID: Long) : HintableEntry() {
+    val itemCount = titleText("0/0")
+    val hintPanel = JPanel()
+
+    val listener = object : MouseAdapter() {
+        override fun mousePressed(e: MouseEvent?) {
+            if (e == null) return
+            if (e.clickCount == 2) {
+                val pts = MainFrame.CONN.hintPoints
+                val cost = MainFrame.CONN.hintCost
+                if (pts < cost) {
+                    JOptionPane.showMessageDialog(
+                        null, "Can't afford hint.\nCosts $cost, you have $pts.",
+                        "Can't afford hint", JOptionPane.PLAIN_MESSAGE
+                    )
+                    return
+                }
+                val res = JOptionPane.showConfirmDialog(
+                    null, "Hint location for $itemName?\n${if (cost == 0) "Hints are free!" else "Costs $cost, you have $pts."}", "Hint $itemName",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+                    null
+                )
+                if (res == JOptionPane.YES_OPTION) MainFrame.CONN.requestItemHint(itemName)
+            }
+        }
+    }
+
+    init {
+        background = Color(.8f, 1f, 1f)
+
+        val titlePane = JPanel()
+        titlePane.isOpaque = false
+        titlePane.layout = BoxLayout(titlePane, BoxLayout.X_AXIS)
+        add(titlePane)
+
+        titlePane.add(titleText(itemName))
+        titlePane.add(Box.createHorizontalGlue())
+        titlePane.add(itemCount)
+
+        hintPanel.isOpaque = false
+        hintPanel.layout = BoxLayout(hintPanel, BoxLayout.Y_AXIS)
+        add(hintPanel)
+
+        addMouseListener(listener)
+    }
+
+    abstract fun getItemTotal(): Int
+
+    private val hintList = ArrayList<HintLabel>()
+    override fun update() {
+        val required = getItemTotal()
+        hintPanel.removeAll()
+        hintList.clear()
+        val hintInfo = MainFrame.CONN.findOwnHintItemList(itemID)
+        var found = 0
+        for (a in 0 until required) {
+            val hint = HintLabel("")
+            hint.addMouseListener(listener)
+            hintList.add(hint)
+
+            if (hintInfo.size > a && hintInfo[a].found) found++
+            else {
+                hintPanel.add(makeSpacer())
+                hintPanel.add(hint)
+            }
+            itemCount.text = "$found/$required"
+        }
+    }
+
+    override fun updateHints() {
+        val hintInfo = MainFrame.CONN.findOwnHintItemList(itemID)
+        for (a in 0 until hintList.size) {
+            if (hintInfo.size <= a) break
+            hintList[a].setItemData(hintInfo[a])
+        }
+    }
+}
+
+class TrackEntry(val track: Track) : HintableEntry() {
     val hintItemSpacer = makeSpacer()
     val hintItem = HintLabel("Unlocks at")
     val playRewardSpacer = makeSpacer()
@@ -291,10 +473,6 @@ class TrackEntry(val track: Track) : JPanel() {
     val hintBeat = HintLabel("Beat reward")
 
     init {
-        isOpaque = true
-        border = CompoundBorder(LineBorder(Color.BLACK, 1, false), EmptyBorder(0, 2, 2, 2))
-        layout = BoxLayout(this, BoxLayout.Y_AXIS)
-
         val titlePane = JPanel()
         titlePane.isOpaque = false
         titlePane.layout = BoxLayout(titlePane, BoxLayout.X_AXIS)
@@ -327,7 +505,6 @@ class TrackEntry(val track: Track) : JPanel() {
                             println(hint)
                             return
                         }
-                        // TODO: check if hint exists
                         val pts = MainFrame.CONN.hintPoints
                         val cost = MainFrame.CONN.hintCost
                         if (pts < cost) {
@@ -369,7 +546,7 @@ class TrackEntry(val track: Track) : JPanel() {
         hintBeat.addMouseListener(listener)
     }
 
-    fun update() {
+    override fun update() {
         val status = MainFrame.getTrackStatus(track.ID)
         if (status == TrackStatus.BEATEN) {
             // hide the entire entry
@@ -398,7 +575,7 @@ class TrackEntry(val track: Track) : JPanel() {
         }
     }
 
-    fun updateHints() {
+    override fun updateHints() {
         hintItem.setItemData(MainFrame.CONN.findOwnHintItem(track.ID))
         hintPlay.setLocationData(MainFrame.CONN.findOwnHintLoc(track.ID))
         hintBeat.setLocationData(MainFrame.CONN.findOwnHintLoc(track.ID + 1000))
