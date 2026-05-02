@@ -17,6 +17,7 @@ World options:
 - rating_start: initial rating required to beat a track (C to S), Rank Reduction items are created to cover the difference between this and rating
 - easy_track: how many difficulty steps easier than max_diff per increase in required rank (rank A increases to S if this many difficulties below max_diff, B increases to S at double this, etc.), 0 to disable
 - fun_facts: how many Nothing filler items to replace with Fun Fact items, which say one of the game's fun facts in chat (auto-limits to number of fillers)
+- hot_dogs: how many hot dogs are required to unlock the goal track (auto-set to 0 if goal is above 0)
 - min_diff: minimum track difficulty to include (1-9), the starting track will be the shortest track of this difficulty
 - max_diff: maximum track difficulty to include (2-10), must be higher than min_diff
 - unsafe: if enabled, includes tracks marked as stream-unsafe (Hungarian Dance, Stars & Stripes, W. Post March)
