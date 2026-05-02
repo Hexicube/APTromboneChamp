@@ -21,6 +21,8 @@ enum class TrackStatus(val sortOrder: Int) {
 
 class MainFrame : JFrame("Tromboner AP Client") {
     companion object {
+        var INST: MainFrame? = null
+
         val ALL_FACTS = listOf(
             "It takes one-thousand workers a full year to produce a single trombone.",
             "The trombone is related to the trumpet (they are cousins).",
@@ -52,7 +54,8 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
         val SETTINGS = Settings(
             1, null, 3,
-            3, 2, 1, 10,
+            3, 2, 0, DifficultyGatingMode.OFF,
+            1, 10,
             true, true, true, true,
             emptyList()
         )
@@ -88,6 +91,25 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
         fun getTrackStatus(track: Long): TrackStatus {
             if (!ITEMS.contains(track)) return TrackStatus.LOCKED
+            if (SETTINGS.diffGating == DifficultyGatingMode.ON) {
+                val diff = trackList.first { it.ID == track }.diff
+                if (diff > SETTINGS.minDiff) {
+                    if (!ITEMS.contains(1010L + diff)) return TrackStatus.LOCKED
+                }
+            }
+            if (SETTINGS.diffGating == DifficultyGatingMode.PROG) {
+                val needed = trackList.first { it.ID == track }.diff - SETTINGS.minDiff
+                if (needed > 0) {
+                    val numProg = ITEMS.count { it == 1011L }
+                    if (numProg < needed) return TrackStatus.LOCKED
+                }
+            }
+            if (track == SETTINGS.goalTrack?.ID) {
+                if (SETTINGS.hotDogs > 0) {
+                    val numHotDogs = ITEMS.count { it == 1004L }
+                    if (numHotDogs < SETTINGS.hotDogs) return TrackStatus.LOCKED
+                }
+            }
             if (!LOCS.contains(track)) return TrackStatus.AVAILABLE
             if (!LOCS.contains(track + 1000L)) return TrackStatus.PLAYED
             return TrackStatus.BEATEN
@@ -122,13 +144,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
         }
 
         fun update() {
-            //TABLE.revalidate()
-            //TABLE.repaint()
             neededRating.text = "Target Rating: ${listOf("C", "B", "A", "S")[getCurRatingTarget()]}"
-
-            val goalTrack = Track.getGoalTrack(SETTINGS)
-            goalTarget.text = if (goalTrack != null) "Goal: " + goalTrack.name
-            else "Goal: ${trackList.count { getTrackStatus(it.ID) == TrackStatus.BEATEN }}/${SETTINGS.goalTracks}(${trackList.size}) tracks"
 
             for (entry in pinnedEntries) entry.update()
             for (entry in trackEntries) entry.value.update()
@@ -138,14 +154,34 @@ class MainFrame : JFrame("Tromboner AP Client") {
         val trackEntries = emptyMap<Track, TrackEntry>().toMutableMap()
         fun updateAllEntries(tracks: List<Track>) {
             // happens when connecting
+            val goalTrack = Track.getGoalTrack(SETTINGS)
+            goalTarget.text = if (goalTrack != null) "Goal: " + goalTrack.name
+            else "Goal: ${trackList.count { getTrackStatus(it.ID) == TrackStatus.BEATEN }}/${SETTINGS.goalTracks}(${trackList.size}) tracks"
+
             val diffNeeded = SETTINGS.startRating - SETTINGS.goalRating
-            if (diffNeeded > 0) pinnedEntries.add(object : DifficultyReductionEntry("Rank Reduction", 1001L) {
+            if (diffNeeded > 0) pinnedEntries.add(object : GenericHintableEntry("Rank Reduction", 1001L) {
                 override fun getItemTotal() = diffNeeded
             })
 
-            // TODO: difficulty gating items
+            if (SETTINGS.diffGating == DifficultyGatingMode.ON) {
+                for (diff in (SETTINGS.minDiff + 1) .. SETTINGS.maxDiff) {
+                    pinnedEntries.add(object : GenericHintableEntry("Difficulty $diff", 101L + diff) {
+                        override fun getItemTotal() = 1
+                    })
+                }
+            }
+            if (SETTINGS.diffGating == DifficultyGatingMode.PROG) {
+                val needed = SETTINGS.maxDiff - SETTINGS.minDiff
+                pinnedEntries.add(object : GenericHintableEntry("Progressive Difficulty", 1011L) {
+                    override fun getItemTotal() = needed
+                })
+            }
 
-            // TODO: hot dogs
+            if (SETTINGS.hotDogs > 0) {
+                pinnedEntries.add(object : GenericHintableEntry("Hot Dog", 1004L) {
+                    override fun getItemTotal() = SETTINGS.hotDogs
+                })
+            }
 
             trackList = tracks
             trackEntries.clear()
@@ -173,7 +209,10 @@ class MainFrame : JFrame("Tromboner AP Client") {
                 }
                 diff
             }
-            for (track in tracks) scrollContents.add(trackEntries[track])
+            for (track in tracks) {
+                if (getTrackStatus(track.ID) != TrackStatus.BEATEN) scrollContents.add(trackEntries[track])
+            }
+            scrollContents.invalidate()
         }
 
         fun updateHints() {
@@ -204,6 +243,8 @@ class MainFrame : JFrame("Tromboner AP Client") {
     }
 
     init {
+        INST = this
+
         val content = JPanel()
         content.layout = BoxLayout(content, BoxLayout.Y_AXIS)
 
@@ -250,9 +291,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
         content.add(Box.createVerticalStrut(5))
 
-        // TODO: info about gating
-        // TODO: number of hot dogs
-        content.add(horizAlignText(neededRating)) // TODO: show hint info and double-click to hint (put this in the track list pinned to the top?)
+        content.add(horizAlignText(neededRating))
         content.add(horizAlignText(goalTarget))
 
         content.add(Box.createVerticalStrut(5))
@@ -387,7 +426,7 @@ abstract class HintableEntry : JPanel() {
     }
 }
 
-abstract class DifficultyReductionEntry(val itemName: String, val itemID: Long) : HintableEntry() {
+abstract class GenericHintableEntry(val itemName: String, val itemID: Long) : HintableEntry() {
     val itemCount = titleText("0/0")
     val hintPanel = JPanel()
 
@@ -399,13 +438,13 @@ abstract class DifficultyReductionEntry(val itemName: String, val itemID: Long) 
                 val cost = MainFrame.CONN.hintCost
                 if (pts < cost) {
                     JOptionPane.showMessageDialog(
-                        null, "Can't afford hint.\nCosts $cost, you have $pts.",
+                        MainFrame.INST, "Can't afford hint.\nCosts $cost, you have $pts.",
                         "Can't afford hint", JOptionPane.PLAIN_MESSAGE
                     )
                     return
                 }
                 val res = JOptionPane.showConfirmDialog(
-                    null, "Hint location for $itemName?\n${if (cost == 0) "Hints are free!" else "Costs $cost, you have $pts."}", "Hint $itemName",
+                    MainFrame.INST, "Hint location for $itemName?\n${if (cost == 0) "Hints are free!" else "Costs $cost, you have $pts."}", "Hint $itemName",
                     JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
                     null
                 )
@@ -440,27 +479,23 @@ abstract class DifficultyReductionEntry(val itemName: String, val itemID: Long) 
         val required = getItemTotal()
         hintPanel.removeAll()
         hintList.clear()
-        val hintInfo = MainFrame.CONN.findOwnHintItemList(itemID)
-        var found = 0
-        for (a in 0 until required) {
+        val found = MainFrame.ITEMS.count { it == itemID }
+        for (a in 0 until (required - found)) {
             val hint = HintLabel("")
             hint.addMouseListener(listener)
             hintList.add(hint)
-
-            if (hintInfo.size > a && hintInfo[a].found) found++
-            else {
-                hintPanel.add(makeSpacer())
-                hintPanel.add(hint)
-            }
-            itemCount.text = "$found/$required"
+            hintPanel.add(makeSpacer())
+            hintPanel.add(hint)
         }
+        itemCount.text = "$found/$required"
     }
 
     override fun updateHints() {
-        val hintInfo = MainFrame.CONN.findOwnHintItemList(itemID)
+        val hintInfo = MainFrame.CONN.findOwnHintItemList(itemID).filter { !it.found }
+        println(hintInfo.joinToString())
         for (a in 0 until hintList.size) {
-            if (hintInfo.size <= a) break
-            hintList[a].setItemData(hintInfo[a])
+            if (hintInfo.size <= a) hintList[a].setItemData(null)
+            else hintList[a].setItemData(hintInfo[a])
         }
     }
 }
@@ -509,13 +544,13 @@ class TrackEntry(val track: Track) : HintableEntry() {
                         val cost = MainFrame.CONN.hintCost
                         if (pts < cost) {
                             JOptionPane.showMessageDialog(
-                                null, "Can't afford hint.\nCosts $cost, you have $pts.",
+                                MainFrame.INST, "Can't afford hint.\nCosts $cost, you have $pts.",
                                 "Can't afford hint", JOptionPane.PLAIN_MESSAGE
                             )
                         }
                         else {
                             val res = JOptionPane.showConfirmDialog(
-                                null, "Hint location for ${track.fullName}?\n${if (cost == 0) "Hints are free!" else "Costs $cost, you have $pts."}", "Hint Track",
+                                MainFrame.INST, "Hint location for ${track.fullName}?\n${if (cost == 0) "Hints are free!" else "Costs $cost, you have $pts."}", "Hint Track",
                                 JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
                                 null
                             )
@@ -525,7 +560,7 @@ class TrackEntry(val track: Track) : HintableEntry() {
                     }
 
                     var res = JOptionPane.showOptionDialog(
-                        null, track.fullName, "Track Entry",
+                        MainFrame.INST, track.fullName, "Track Entry",
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
                         null, arrayOf("D", "C", "B", "A", "S"), null)
                     if (res != JOptionPane.CLOSED_OPTION) {
@@ -581,123 +616,3 @@ class TrackEntry(val track: Track) : HintableEntry() {
         hintBeat.setLocationData(MainFrame.CONN.findOwnHintLoc(track.ID + 1000))
     }
 }
-
-/*class TrackTableModel(tracks: List<Track>) : AbstractTableModel() {
-    public var trackList: List<Track> = tracks
-
-    override fun getRowCount() = trackList.size
-    override fun getColumnCount() = 4
-
-    override fun getColumnName(column: Int): String? {
-        return when (column) {
-            0 -> "Track"
-            1 -> "Diff."
-            2 -> "Len"
-            3 -> "Status"
-            else -> null
-        }
-    }
-
-    override fun getValueAt(rowIndex: Int, columnIndex: Int): Any? {
-        if (rowIndex < 0 || rowIndex >= rowCount || columnIndex < 0 || columnIndex >= columnCount) return null
-        val track = trackList[rowIndex]
-        return when (columnIndex) {
-            0 -> track.name
-            1 -> track.diff.toString() + "/10"
-            2 -> (track.len / 60).toString() + ":" + String.format("%02d", track.len % 60)
-            3 -> {
-                val status = MainFrame.getTrackStatus(track.ID)
-                when (status) {
-                    TrackStatus.LOCKED -> "Locked"
-                    TrackStatus.AVAILABLE -> "Available"
-                    TrackStatus.PLAYED -> "Played"
-                    TrackStatus.BEATEN -> "Beaten"
-                }
-            }
-            else -> null
-        }
-    }
-}
-
-class TrackTableRenderer : DefaultTableCellRenderer() {
-    override fun getTableCellRendererComponent(
-        table: JTable?,
-        value: Any?,
-        isSelected: Boolean,
-        hasFocus: Boolean,
-        row: Int,
-        column: Int
-    ): Component? {
-        if (table == null) return null
-        val comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
-        val track = MainFrame.TABLE.MODEL.trackList[row]
-        val status = MainFrame.getTrackStatus(track.ID)
-        val col = when (status) {
-            TrackStatus.LOCKED -> Color.GRAY
-            TrackStatus.AVAILABLE -> Color.RED
-            TrackStatus.PLAYED -> {
-                if (MainFrame.expectedToBeatTrack(track)) Color.RED
-                else Color.YELLOW
-            }
-            TrackStatus.BEATEN -> Color.GREEN
-        }
-        comp.background = col
-        return comp
-    }
-}
-
-class TrackTable : JTable() {
-    val MODEL = TrackTableModel(Track.getTrackList(MainFrame.SETTINGS))
-
-    init {
-        model = MODEL
-        autoResizeMode = AUTO_RESIZE_OFF
-        tableHeader.reorderingAllowed = false
-        columnModel.getColumn(0).preferredWidth = 150
-        columnModel.getColumn(1).preferredWidth = 40
-        columnModel.getColumn(2).preferredWidth = 30
-        columnModel.getColumn(3).preferredWidth = 60
-        columnModel.getColumn(0).cellRenderer = TrackTableRenderer()
-        columnModel.getColumn(1).cellRenderer = TrackTableRenderer()
-        columnModel.getColumn(2).cellRenderer = TrackTableRenderer()
-        columnModel.getColumn(3).cellRenderer = TrackTableRenderer()
-
-        addMouseListener(object : MouseAdapter() {
-            override fun mousePressed(e: MouseEvent?) {
-                if (e == null) return
-                if (e.clickCount == 2) {
-                    val point = e.point
-                    val row = rowAtPoint(point)
-                    val track = MODEL.trackList[row]
-                    if (MainFrame.getTrackStatus(track.ID) == TrackStatus.LOCKED) {
-                        // testing: hint it
-                        MainFrame.CONN.requestItemHint(track.name)
-                        return
-                    }
-
-                    var res = JOptionPane.showOptionDialog(
-                        null, track.fullName, "Track Entry",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                        null, arrayOf("D", "C", "B", "A", "S"), null)
-                    if (res != JOptionPane.CLOSED_OPTION) {
-                        if (!MainFrame.LOCS.contains(track.ID)) {
-                            MainFrame.CONN.sendLocation(track.ID)
-                            MainFrame.LOCS.add(track.ID)
-                            MainFrame.TABLE.repaint()
-                        }
-                        res--
-                        val need = MainFrame.getCurRatingTarget()
-                        if (res >= need) {
-                            if (!MainFrame.LOCS.contains(track.ID + 1000)) {
-                                MainFrame.CONN.sendLocation(track.ID + 1000)
-                                MainFrame.LOCS.add(track.ID + 1000)
-                                MainFrame.TABLE.repaint()
-                                MainFrame.checkWin()
-                            }
-                        }
-                    }
-                }
-            }
-        })
-    }
-}*/

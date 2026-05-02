@@ -203,6 +203,8 @@ class APConnectionManager : WebSocket.Listener {
                         MainFrame.SETTINGS.goalRating = slotData.get("rating").asInt
                         MainFrame.SETTINGS.startRating = slotData.get("rating_start").asInt
                         MainFrame.SETTINGS.easyTrackGap = slotData.get("easy_track").asInt
+                        // TODO: difficulty gating setting
+                        // TODO: hot dog count
                         MainFrame.SETTINGS.minDiff = slotData.get("min_diff").asInt
                         MainFrame.SETTINGS.maxDiff = slotData.get("max_diff").asInt
                         MainFrame.SETTINGS.unsafe = slotData.get("unsafe").asInt == 1
@@ -263,6 +265,7 @@ class APConnectionManager : WebSocket.Listener {
                             }
                         }
                         MainFrame.update()
+                        MainFrame.sortTrackList()
                         MainFrame.updateHints()
                     }
                     "LocationInfo" -> {
