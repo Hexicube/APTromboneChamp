@@ -204,7 +204,7 @@ class APConnectionManager : WebSocket.Listener {
                         MainFrame.SETTINGS.startRating = slotData.get("rating_start").asInt
                         MainFrame.SETTINGS.easyTrackGap = slotData.get("easy_track").asInt
                         // TODO: difficulty gating setting
-                        // TODO: hot dog count
+                        MainFrame.SETTINGS.hotDogs = slotData.get("hot_dogs").asInt
                         MainFrame.SETTINGS.minDiff = slotData.get("min_diff").asInt
                         MainFrame.SETTINGS.maxDiff = slotData.get("max_diff").asInt
                         MainFrame.SETTINGS.unsafe = slotData.get("unsafe").asInt == 1
@@ -247,6 +247,7 @@ class APConnectionManager : WebSocket.Listener {
                         }
                         val index = data.get("index").asInt // TODO: track index and make sure it lines up
                         val items = data.get("items").asJsonArray.map { APNetworkItem.fromJson(it.asJsonObject) }
+                        var hintRefresh = false
                         for (item in items) {
                             MainFrame.ITEMS.add(item.item)
                             val track = MainFrame.trackList.firstOrNull { it.ID == item.item }
@@ -264,7 +265,9 @@ class APConnectionManager : WebSocket.Listener {
                                     sendChat("FUN FACT: $fact")
                                 }
                             }
+                            if (item.item == 1001L || item.item == 1004L || item.item == 1011L) hintRefresh = true // hint data needs refreshing as there are multiple of these
                         }
+                        if (hintRefresh) sendGet("_read_hints_${thisTeam}_${thisSlot}")
                         MainFrame.update()
                         MainFrame.sortTrackList()
                         MainFrame.updateHints()
@@ -284,7 +287,7 @@ class APConnectionManager : WebSocket.Listener {
                     "RoomUpdate" -> {
                         // print it if theres something new
                         val keys = ArrayList(data.keySet())
-                        keys.remove("type")
+                        keys.remove("cmd")
                         keys.remove("hint_points")
                         keys.remove("players")
                         keys.remove("checked_locations")
@@ -483,7 +486,10 @@ class APConnectionManager : WebSocket.Listener {
                         // Response packet for Get, needed for hint data
                         val keys = data.get("keys").asJsonObject.asMap()
                         for (entry in keys) {
-                            if (entry.key == "_read_hints_${thisTeam}_${thisSlot}") handleHintData(entry.value.asJsonArray)
+                            if (entry.key == "_read_hints_${thisTeam}_${thisSlot}") {
+                                hints.clear()
+                                handleHintData(entry.value.asJsonArray)
+                            }
                             else println("Unknown Retrieved key: ${entry.key}")
                         }
                     }

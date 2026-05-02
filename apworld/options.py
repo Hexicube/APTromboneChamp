@@ -85,6 +85,16 @@ class FunFacts(Range):
 # - On: per-difficulty gating
 # - Progressive: start at min_diff and each progressive allows going up one difficulty
 
+class HotDogs(Range):
+    """
+    Hot many Hot Dog items are required to unlock the goal track.
+    Does nothing is goal tracks count is above 0.
+    """
+    display_name = "Hot Dogs"
+    range_start = 0
+    range_end = 20
+    default = 10
+
 # track selection options
 
 class MinDiff(Range):
@@ -157,6 +167,7 @@ class APTromboneOptions(PerGameCommonOptions):
     rating_start: InitialRating
     easy_track: EasyTrackStarGap
     fun_facts: FunFacts
+    hot_dogs: HotDogs
     
     min_diff: MinDiff
     max_diff: MaxDiff
@@ -169,7 +180,7 @@ class APTromboneOptions(PerGameCommonOptions):
 option_groups = [
     OptionGroup(
         "Gameplay Options",
-        [GoalTracks, GoalTrack, GoalRating, InitialRating, EasyTrackStarGap, FunFacts],
+        [GoalTracks, GoalTrack, GoalRating, InitialRating, EasyTrackStarGap, FunFacts, HotDogs],
     ),
     OptionGroup(
         "Track Options",
@@ -184,6 +195,7 @@ option_presets = {
         "rating": "A",
         "rating_start": "S",
         "easy_track": 3,
+        "hot_dogs": 10,
 
         "min_diff": 3,
         "max_diff": 7,

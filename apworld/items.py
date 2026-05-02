@@ -81,6 +81,10 @@ def create_all_items(world: APTromboneWorld) -> None:
     for i in range(rating_diff):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Rank Reduction"))
+
+    for i in range(world.options.hot_dogs.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("Hot Dog"))
     
     number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player))
     num_facts = world.options.fun_facts.value

@@ -62,6 +62,9 @@ class APTromboneWorld(World):
             # auto-reduce this
             goal_track_count = len(track_list)
             self.options.goal.value = goal_track_count
+        # set hot dogs to 0 if goal tracks count is above 0
+        if goal_track_count > 0:
+            self.options.hot_dogs.value = 0
         # verify goal track
         goal_track = tracks.get_goal_track(self)
         if goal_track_count == 0:
@@ -80,8 +83,8 @@ class APTromboneWorld(World):
         num_locs = len(track_list) * 2 # TODO: dont double when option to disable "Play: X" locs is enabled
         num_items = len(track_list) - 1 # TODO: dont add track gating items when option exists
         num_items += rating_start - rating_end
+        num_items += self.options.hot_dogs.value
         # TODO: add difficulty gating items when added
-        # TODO: add hotdog macguffin items when added
         if num_locs < num_items:
             raise OptionError(f"Settings are too restrictive, location count {num_locs} is below item count {num_items}")
         #raise OptionError(list(map(lambda t: t["name"], track_list)))
@@ -104,7 +107,7 @@ class APTromboneWorld(World):
 
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict(
-            "goal", "goal_track", "rating", "rating_start", "easy_track", "fun_facts",
+            "goal", "goal_track", "rating", "rating_start", "easy_track", "fun_facts", "hot_dogs",
             "min_diff", "max_diff", "unsafe", "celeste", "pizza", "toby", "removed_tracks"
         )
     

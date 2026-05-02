@@ -31,7 +31,8 @@ def set_all_rules(world: APTromboneWorld) -> None:
                     world.set_rule(world.get_location("Beat: " + track["name"]), Has("Rank Reduction", required))
         # set goal rule to specific track
         goal_track = tracks.get_goal_track(world)
-        world.set_completion_rule(Has(goal_track["name"]) & Has("Rank Reduction", rating_diff))
+        hot_dogs = world.options.hot_dogs.value
+        world.set_completion_rule(Has(goal_track["name"]) & Has("Rank Reduction", rating_diff) & Has("Hot Dog", hot_dogs))
     else:
         # make sure the goal is possible
         if num_tracks_win > len(track_list):

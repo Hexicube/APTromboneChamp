@@ -496,12 +496,13 @@ abstract class GenericHintableEntry(val itemName: String, val itemID: Long) : Hi
             hintPanel.add(hint)
         }
         itemCount.text = "$found/$required"
+        updateHints()
     }
 
     override fun updateHints() {
         val hintInfo = MainFrame.CONN.findOwnHintItemList(itemID).filter { !it.found }
         for (a in 0 until hintList.size) {
-            if (hintInfo.size <= a) hintList[a].setItemData(null)
+            if (a >= hintInfo.size) hintList[a].setItemData(null)
             else hintList[a].setItemData(hintInfo[a])
         }
     }
@@ -598,7 +599,7 @@ class TrackEntry(val track: Track) : HintableEntry() {
             remove(playRewardSpacer)
             remove(hintPlay)
         }
-        if (status != TrackStatus.LOCKED) {
+        if (status != TrackStatus.LOCKED || (track == MainFrame.SETTINGS.goalTrack && MainFrame.ITEMS.contains(track.ID))) {
             // hide the item location, it's been collected
             remove(hintItemSpacer)
             remove(hintItem)
