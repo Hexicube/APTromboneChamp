@@ -9,7 +9,7 @@ import javax.swing.JOptionPane
 
 class APConnectionManager : WebSocket.Listener {
     companion object {
-        private val GAME_NAME = "Trombone Champ"
+        private const val GAME_NAME = "Trombone Champ"
         private val AP_VERSION = APNetworkVersion(0, 6, 7)
         private val GEN_VERSION = APNetworkVersion(1, 0, 0)
     }
@@ -234,7 +234,8 @@ class APConnectionManager : WebSocket.Listener {
 
                         connectionState = 3
 
-                        updateStatus(if (checkedLocations.isEmpty()) ClientStatus.CONNECTED else ClientStatus.PLAYING) // TODO: check if goaled here?
+                        updateStatus(if (checkedLocations.isEmpty()) ClientStatus.CONNECTED else ClientStatus.PLAYING)
+                        MainFrame.checkWin()
 
                         // fetch hints
                         sendGet("_read_hints_${thisTeam}_${thisSlot}")
@@ -605,10 +606,13 @@ class APConnectionManager : WebSocket.Listener {
         sendPacket(obj)
     }
 
-    fun requestItemHint(item: String) {
+    fun requestItemHint(item: Long) {
         // SetReply handles the response
-        // TODO: change this to take in the item ID and fetch the item name through slotItemMap so that apworld names are authorative
-        sendChat("!hint $item")
+        if (socket == null || connectionState != 3 || thisSlot == -1) return
+        val thisSlot = slotList[thisSlot] ?: return
+        val thisGame = slotItemMap[thisSlot.game] ?: return
+        val thisItem = thisGame[item] ?: return
+        sendChat("!hint $thisItem")
     }
 
     enum class ClientStatus(val id: Int) {

@@ -213,6 +213,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
                 if (getTrackStatus(track.ID) != TrackStatus.BEATEN) scrollContents.add(trackEntries[track])
             }
             scrollContents.invalidate()
+            scrollContents.repaint()
         }
 
         fun updateHints() {
@@ -434,6 +435,13 @@ abstract class GenericHintableEntry(val itemName: String, val itemID: Long) : Hi
         override fun mousePressed(e: MouseEvent?) {
             if (e == null) return
             if (e.clickCount == 2) {
+                val found = MainFrame.ITEMS.count { it == itemID }
+                if (found >= getItemTotal()) return
+
+                val allHints = MainFrame.CONN.findOwnHintItemList(itemID).filter { !it.found }
+                val req = getItemTotal() - found - allHints.size
+                if (req <= 0) return
+
                 val pts = MainFrame.CONN.hintPoints
                 val cost = MainFrame.CONN.hintCost
                 if (pts < cost) {
@@ -448,7 +456,7 @@ abstract class GenericHintableEntry(val itemName: String, val itemID: Long) : Hi
                     JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
                     null
                 )
-                if (res == JOptionPane.YES_OPTION) MainFrame.CONN.requestItemHint(itemName)
+                if (res == JOptionPane.YES_OPTION) MainFrame.CONN.requestItemHint(itemID)
             }
         }
     }
@@ -492,7 +500,6 @@ abstract class GenericHintableEntry(val itemName: String, val itemID: Long) : Hi
 
     override fun updateHints() {
         val hintInfo = MainFrame.CONN.findOwnHintItemList(itemID).filter { !it.found }
-        println(hintInfo.joinToString())
         for (a in 0 until hintList.size) {
             if (hintInfo.size <= a) hintList[a].setItemData(null)
             else hintList[a].setItemData(hintInfo[a])
@@ -536,10 +543,8 @@ class TrackEntry(val track: Track) : HintableEntry() {
                 if (e.clickCount == 2) {
                     if (MainFrame.getTrackStatus(track.ID) == TrackStatus.LOCKED) {
                         val hint = MainFrame.CONN.findOwnHintItem(track.ID)
-                        if (hint != null) {
-                            println(hint)
-                            return
-                        }
+                        if (hint != null) return
+
                         val pts = MainFrame.CONN.hintPoints
                         val cost = MainFrame.CONN.hintCost
                         if (pts < cost) {
@@ -554,7 +559,7 @@ class TrackEntry(val track: Track) : HintableEntry() {
                                 JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
                                 null
                             )
-                            if (res == JOptionPane.YES_OPTION) MainFrame.CONN.requestItemHint(track.name)
+                            if (res == JOptionPane.YES_OPTION) MainFrame.CONN.requestItemHint(track.ID)
                         }
                         return
                     }
