@@ -132,14 +132,20 @@ class MainFrame : JFrame("Tromboner AP Client") {
         fun checkWin() {
             if (SETTINGS.goalTracks == 0) {
                 val goal = Track.getGoalTrack(SETTINGS)!!
-                if (LOCS.contains(goal.ID + 1000L)) CONN.updateStatus(APConnectionManager.ClientStatus.GOAL)
+                if (LOCS.contains(goal.ID + 1000L)) {
+                    CONN.updateStatus(APConnectionManager.ClientStatus.GOAL)
+                    CONN.sendChat("!alias DONE")
+                }
             }
             else {
                 var numBeat = 0
                 for (track in trackList) {
                     if (LOCS.contains(track.ID + 1000L)) numBeat++
                 }
-                if (numBeat >= SETTINGS.goalTracks) CONN.updateStatus(APConnectionManager.ClientStatus.GOAL)
+                if (numBeat >= SETTINGS.goalTracks) {
+                    CONN.updateStatus(APConnectionManager.ClientStatus.GOAL)
+                    CONN.sendChat("!alias DONE")
+                }
             }
         }
 
