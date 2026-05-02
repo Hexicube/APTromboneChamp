@@ -151,7 +151,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
         }
 
         val pinnedEntries = emptyList<HintableEntry>().toMutableList()
-        val trackEntries = emptyMap<Track, TrackEntry>().toMutableMap()
+        var trackEntries = emptyMap<Track, TrackEntry>().toSortedMap { a, b -> a.name.compareTo(b.name) }
         fun updateAllEntries(tracks: List<Track>) {
             // happens when connecting
             val goalTrack = Track.getGoalTrack(SETTINGS)
@@ -195,22 +195,28 @@ class MainFrame : JFrame("Tromboner AP Client") {
         fun sortTrackList() {
             scrollContents.removeAll()
             for (entry in pinnedEntries) scrollContents.add(entry)
-            val tracks = trackEntries.keys.sortedWith { a, b ->
-                var diff = 0
-                for (type in TrackSortOrderList.dataModel.elements()) {
-                    diff = when (type) {
-                        "DLC" -> a.DLC.compareTo(b.DLC)
-                        "Name" -> a.name.compareTo(b.name)
-                        "Difficulty" -> a.diff.compareTo(b.diff)
-                        "Status" -> getTrackStatus(a.ID).sortOrder.compareTo(getTrackStatus(b.ID).sortOrder)
-                        else -> 0
+            val order = TrackSortOrderList.dataModel.elements().toList()
+            val goal = SETTINGS.goalTrack
+            trackEntries = trackEntries.toSortedMap { a, b ->
+                if (a == goal) -1
+                else if (b == goal) 1
+                else {
+                    var diff = 0
+                    for (type in order) {
+                        diff = when (type) {
+                            "DLC" -> a.DLC.compareTo(b.DLC)
+                            "Name" -> a.name.compareTo(b.name)
+                            "Difficulty" -> a.diff.compareTo(b.diff)
+                            "Status" -> getTrackStatus(a.ID).sortOrder.compareTo(getTrackStatus(b.ID).sortOrder)
+                            else -> 0
+                        }
+                        if (diff != 0) break
                     }
-                    if (diff != 0) break
+                    diff
                 }
-                diff
             }
-            for (track in tracks) {
-                if (getTrackStatus(track.ID) != TrackStatus.BEATEN) scrollContents.add(trackEntries[track])
+            for (entry in trackEntries.entries) {
+                if (getTrackStatus(entry.key.ID) != TrackStatus.BEATEN) scrollContents.add(entry.value)
             }
             scrollContents.revalidate()
             scrollContents.repaint()
