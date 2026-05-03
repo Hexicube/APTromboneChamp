@@ -217,7 +217,6 @@ class APConnectionManager : WebSocket.Listener {
                         }
 
                         MainFrame.updateAllEntries(Track.getTrackList(MainFrame.SETTINGS))
-                        MainFrame.update()
 
                         //playerMap.clear()
                         slotList.clear()
@@ -249,6 +248,7 @@ class APConnectionManager : WebSocket.Listener {
                         val index = data.get("index").asInt // TODO: track index and make sure it lines up
                         val items = data.get("items").asJsonArray.map { APNetworkItem.fromJson(it.asJsonObject) }
                         var hintRefresh = false
+                        var updateList = false
                         for (item in items) {
                             MainFrame.ITEMS.add(item.item)
                             val track = MainFrame.trackList.firstOrNull { it.ID == item.item }
@@ -267,11 +267,14 @@ class APConnectionManager : WebSocket.Listener {
                                 }
                             }
                             if (item.item == 1001L || item.item == 1004L || item.item == 1011L) hintRefresh = true // hint data needs refreshing as there are multiple of these
+                            if (item.item < 1000L || item.item == 1001L || item.item == 1004L || item.item > 1010L) updateList = true
                         }
                         if (hintRefresh) sendGet("_read_hints_${thisTeam}_${thisSlot}")
-                        MainFrame.update()
-                        MainFrame.sortTrackList()
-                        MainFrame.updateHints()
+                        if (updateList) {
+                            MainFrame.update()
+                            MainFrame.sortTrackList()
+                            if (!hintRefresh) MainFrame.updateHints()
+                        }
                     }
                     "LocationInfo" -> {
                         // Response packet for LocationScouts

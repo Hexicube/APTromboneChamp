@@ -195,10 +195,21 @@ class MainFrame : JFrame("Tromboner AP Client") {
                 val entry = TrackEntry(track)
                 trackEntries[track] = entry
             }
+            update()
             sortTrackList()
         }
 
+        private var sortTimer: java.util.Timer? = null
         fun sortTrackList() {
+            sortTimer?.cancel()
+            sortTimer = java.util.Timer()
+            sortTimer!!.schedule(object : java.util.TimerTask() {
+                override fun run() {
+                    sortTrackListWork()
+                }
+            }, 100L)
+        }
+        private fun sortTrackListWork() {
             scrollContents.removeAll()
             for (entry in pinnedEntries) scrollContents.add(entry)
             val order = TrackSortOrderList.dataModel.elements().toList()
