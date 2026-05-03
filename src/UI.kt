@@ -132,21 +132,25 @@ class MainFrame : JFrame("Tromboner AP Client") {
         fun checkWin() {
             if (SETTINGS.goalTracks == 0) {
                 val goal = Track.getGoalTrack(SETTINGS)!!
-                if (LOCS.contains(goal.ID + 1000L)) {
-                    CONN.updateStatus(APConnectionManager.ClientStatus.GOAL)
-                    CONN.sendChat("!alias DONE")
-                }
+                if (LOCS.contains(goal.ID + 1000L)) setGoaledAndAlias()
             }
             else {
                 var numBeat = 0
                 for (track in trackList) {
                     if (LOCS.contains(track.ID + 1000L)) numBeat++
                 }
-                if (numBeat >= SETTINGS.goalTracks) {
-                    CONN.updateStatus(APConnectionManager.ClientStatus.GOAL)
-                    CONN.sendChat("!alias DONE")
-                }
+                if (numBeat >= SETTINGS.goalTracks) setGoaledAndAlias()
             }
+        }
+
+        private var didSetAlias = false
+        fun setGoaledAndAlias() {
+            CONN.updateStatus(APConnectionManager.ClientStatus.GOAL)
+            if (didSetAlias) return
+            val thisPlayer = CONN.getThisPlayer() ?: return
+            if (thisPlayer.alias == "DONE (${thisPlayer.name})") return
+            CONN.sendChat("!alias DONE")
+            didSetAlias = true
         }
 
         fun update() {
@@ -191,29 +195,21 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
             trackList = tracks
             trackEntries.clear()
+            scrollContents.removeAll()
+            for (entry in pinnedEntries) scrollContents.add(entry)
             for (track in tracks) {
                 val entry = TrackEntry(track)
                 trackEntries[track] = entry
+                scrollContents.add(entry)
             }
             update()
             sortTrackList()
         }
 
-        private var sortTimer: java.util.Timer? = null
         fun sortTrackList() {
-            sortTimer?.cancel()
-            sortTimer = java.util.Timer()
-            sortTimer!!.schedule(object : java.util.TimerTask() {
-                override fun run() {
-                    sortTrackListWork()
-                }
-            }, 100L)
-        }
-        private fun sortTrackListWork() {
-            scrollContents.removeAll()
-            for (entry in pinnedEntries) scrollContents.add(entry)
             val order = TrackSortOrderList.dataModel.elements().toList()
             val goal = SETTINGS.goalTrack
+
             trackEntries = trackEntries.toSortedMap { a, b ->
                 if (a == goal) -1
                 else if (b == goal) 1
@@ -232,9 +228,23 @@ class MainFrame : JFrame("Tromboner AP Client") {
                     diff
                 }
             }
-            for (entry in trackEntries.entries) {
-                if (getTrackStatus(entry.key.ID) != TrackStatus.BEATEN) scrollContents.add(entry.value)
+
+            // remove newly beaten tracks
+            for (comp in scrollContents.components.toList()) {
+                if (comp is TrackEntry && getTrackStatus(comp.track.ID) == TrackStatus.BEATEN) scrollContents.remove(comp)
             }
+
+            val offset = pinnedEntries.size
+            val entries = trackEntries.values.filter { getTrackStatus(it.track.ID) != TrackStatus.BEATEN }.toList()
+            // reorder the elements through removing and readding
+            for (a in 0 until entries.size) {
+                if (scrollContents.components.size <= (a + offset)) scrollContents.add(entries[a])
+                else if (scrollContents.components[a + offset] != entries[a]) {
+                    scrollContents.remove(entries[a])
+                    scrollContents.add(entries[a], a + offset)
+                }
+            }
+
             scrollContents.revalidate()
             scrollContents.repaint()
         }

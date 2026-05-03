@@ -1,3 +1,4 @@
+import MainFrame.Companion.CONN
 import com.google.gson.*
 import java.awt.Color
 import java.net.URI
@@ -75,6 +76,8 @@ class APConnectionManager : WebSocket.Listener {
             MainFrame.update()
         }
     }
+
+    fun getThisPlayer() = playerList.firstOrNull { it.slot == thisSlot && it.team == thisTeam }
 
     fun findOwnHintItem(item: Long) = hints.firstOrNull { it.receivingPlayer == thisSlot && it.item == item }
     fun findOwnHintItemList(item: Long) = hints.filter { it.receivingPlayer == thisSlot && it.item == item }
