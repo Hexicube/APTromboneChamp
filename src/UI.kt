@@ -54,7 +54,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
         val SETTINGS = Settings(
             1, null, 3,
-            3, 2, 0, DifficultyGatingMode.OFF,
+            3, 2, 0, 0, DifficultyGatingMode.OFF,
             1, 10,
             true, true, true, true,
             emptyList()
@@ -170,12 +170,14 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
             val diffNeeded = SETTINGS.startRating - SETTINGS.goalRating
             if (diffNeeded > 0) pinnedEntries.add(object : GenericHintableEntry("Rank Reduction", 1001L) {
+                override fun getItemRequired() = diffNeeded
                 override fun getItemTotal() = diffNeeded
             })
 
             if (SETTINGS.diffGating == DifficultyGatingMode.ON) {
                 for (diff in (SETTINGS.minDiff + 1) .. SETTINGS.maxDiff) {
                     pinnedEntries.add(object : GenericHintableEntry("Difficulty $diff", 101L + diff) {
+                        override fun getItemRequired() = 1
                         override fun getItemTotal() = 1
                     })
                 }
@@ -183,13 +185,15 @@ class MainFrame : JFrame("Tromboner AP Client") {
             if (SETTINGS.diffGating == DifficultyGatingMode.PROG) {
                 val needed = SETTINGS.maxDiff - SETTINGS.minDiff
                 pinnedEntries.add(object : GenericHintableEntry("Progressive Difficulty", 1011L) {
+                    override fun getItemRequired() = needed
                     override fun getItemTotal() = needed
                 })
             }
 
             if (SETTINGS.hotDogs > 0) {
                 pinnedEntries.add(object : GenericHintableEntry("Hot Dog", 1004L) {
-                    override fun getItemTotal() = SETTINGS.hotDogs
+                    override fun getItemRequired() = SETTINGS.hotDogs
+                    override fun getItemTotal() = SETTINGS.hotDogs + SETTINGS.extraHotDogs
                 })
             }
 
@@ -513,22 +517,23 @@ abstract class GenericHintableEntry(val itemName: String, val itemID: Long) : Hi
         addMouseListener(listener)
     }
 
+    abstract fun getItemRequired(): Int
     abstract fun getItemTotal(): Int
 
     private val hintList = ArrayList<HintLabel>()
     override fun update() {
-        val required = getItemTotal()
+        val total = getItemTotal()
         hintPanel.removeAll()
         hintList.clear()
         val found = MainFrame.ITEMS.count { it == itemID }
-        for (a in 0 until (required - found)) {
+        for (a in 0 until (total - found)) {
             val hint = HintLabel("")
             hint.addMouseListener(listener)
             hintList.add(hint)
             hintPanel.add(makeSpacer())
             hintPanel.add(hint)
         }
-        itemCount.text = "$found/$required"
+        itemCount.text = "$found/${getItemRequired()}"
         updateHints()
     }
 

@@ -9,6 +9,7 @@ data class Settings(
     var startRating: Int,
     var easyTrackGap: Int,
     var hotDogs: Int,
+    var extraHotDogs: Int,
     var diffGating: DifficultyGatingMode,
 
     var minDiff: Int,
