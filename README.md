@@ -9,8 +9,10 @@ Current features:
 - Locations for both playing and beating tracks
 - Items for unlocking tracks
 - Items for reducing the required rank to beat a track
+- Options for filtering which tracks are used
+- MacGuffin item to delay playing/goaling final track
 
-World options:
+YAML settings:
 - goal: 0 for beating goal_track, or above 0 for beating that many tracks (auto-limits to number of tracks available)
 - goal_track: When goal is 0, specifies which track is the goal track
 - rating: required rating to beat a track (C to S)
@@ -18,6 +20,7 @@ World options:
 - easy_track: how many difficulty steps easier than max_diff per increase in required rank (rank A increases to S if this many difficulties below max_diff, B increases to S at double this, etc.), 0 to disable
 - fun_facts: how many Nothing filler items to replace with Fun Fact items, which say one of the game's fun facts in chat (auto-limits to number of fillers)
 - hot_dogs: how many hot dogs are required to unlock the goal track (auto-set to 0 if goal is above 0)
+- extra_hot_dogs: how many extra hot dogs to add to the item pool (auto-set to 0 if goal is above 0, hot_dogs must be above 0)
 - min_diff: minimum track difficulty to include (1-9), the starting track will be the shortest track of this difficulty
 - max_diff: maximum track difficulty to include (2-10), must be higher than min_diff
 - unsafe: if enabled, includes tracks marked as stream-unsafe (Hungarian Dance, Stars & Stripes, W. Post March)
@@ -47,8 +50,6 @@ Current features:
 - Add difficulty gating options (items for either increasing allowed difficulty, or for allowing specific difficulties)
 - Add option to disable track gating, provided difficulty gating is enabled
 - Add option to remove checks for playing tracks, provided track gating is off (if track gating is on there won't be enough locations)
-- Add MacGuffin option (require hot dog items to unlock goal track)
 - Add Deathlink support (failing to beat a track sends a death, receiving a death negates your next track entry)
 - Add chat entry box
 - Display internal errors in the chat view (such as losing connection)
-- Track list sorting options (alphabetical, difficulty, availability, hinted)
