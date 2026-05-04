@@ -95,6 +95,16 @@ class HotDogs(Range):
     range_end = 20
     default = 10
 
+class ExtraHotDogs(Range):
+    """
+    How many extra Hot Dog items to add.
+    Does nothing if goal tracks count is above 0.
+    """
+    display_name = "Extra Hot Dogs"
+    range_start = 0
+    range_end = 20
+    default = 0
+
 # track selection options
 
 class MinDiff(Range):
@@ -168,6 +178,7 @@ class APTromboneOptions(PerGameCommonOptions):
     easy_track: EasyTrackStarGap
     fun_facts: FunFacts
     hot_dogs: HotDogs
+    extra_hot_dogs: ExtraHotDogs
     
     min_diff: MinDiff
     max_diff: MaxDiff
@@ -180,7 +191,7 @@ class APTromboneOptions(PerGameCommonOptions):
 option_groups = [
     OptionGroup(
         "Gameplay Options",
-        [GoalTracks, GoalTrack, GoalRating, InitialRating, EasyTrackStarGap, FunFacts, HotDogs],
+        [GoalTracks, GoalTrack, GoalRating, InitialRating, EasyTrackStarGap, FunFacts, HotDogs, ExtraHotDogs],
     ),
     OptionGroup(
         "Track Options",
@@ -196,6 +207,7 @@ option_presets = {
         "rating_start": "S",
         "easy_track": 3,
         "hot_dogs": 10,
+        "extra_hot_dogs": 0,
 
         "min_diff": 3,
         "max_diff": 7,

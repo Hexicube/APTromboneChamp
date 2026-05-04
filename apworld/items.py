@@ -82,7 +82,7 @@ def create_all_items(world: APTromboneWorld) -> None:
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Rank Reduction"))
 
-    for i in range(world.options.hot_dogs.value):
+    for i in range(world.options.hot_dogs.value + world.options.extra_hot_dogs.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Hot Dog"))
     
