@@ -47,8 +47,6 @@ Current features:
 
 ## TODO
 
-- Add difficulty gating options (items for either increasing allowed difficulty, or for allowing specific difficulties)
-- Add option to disable track gating, provided difficulty gating is enabled
 - Add option to remove checks for playing tracks, provided track gating is off (if track gating is on there won't be enough locations)
 - Add Deathlink support (failing to beat a track sends a death, receiving a death negates your next track entry)
 - Add chat entry box
