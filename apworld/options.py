@@ -96,11 +96,19 @@ class ExtraHotDogs(Range):
     range_end = 20
     default = 0
 
-class TrackGating(DefaultOnToggle):
+class TrackGating(Choice):
     """
-    If disabled, tracks do not require an item to unlock.
+    Determines how track gating works:
+    - Off: Tracks have no unlock requirement
+    - On: Tracks require an item to unlock, you start with the shortest min_diff track
+    - Loose: Tracks require an item to unlock, you start with all min_diff tracks
+    Track gating cannot be set to On if difficulty gating is enabled.
     """
     display_name = "Track Gating"
+    option_off = 0
+    option_on = 1
+    option_loose = 2
+    default = 1
 
 class DifficultyGating(Choice):
     """
@@ -225,7 +233,7 @@ option_presets = {
         "hot_dogs": 10,
         "extra_hot_dogs": 0,
 
-        "track_gating": True,
+        "track_gating": "on",
         "difficulty_gating": "progressive",
 
         "min_diff": 3,

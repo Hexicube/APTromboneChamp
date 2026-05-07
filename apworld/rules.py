@@ -21,7 +21,7 @@ def set_all_rules(world: APTromboneWorld) -> None:
     num_tracks_win = world.options.goal.value
     track_list = tracks.get_track_list(world)
 
-    track_gating = world.options.track_gating.value
+    track_gating = world.options.track_gating.value > 0
     diff_gating = world.options.difficulty_gating.value
 
     min_diff = world.options.min_diff.value

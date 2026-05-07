@@ -65,12 +65,20 @@ def create_all_items(world: APTromboneWorld) -> None:
         if track["duration"] < shortest["duration"]: shortest = track
     
     number_of_items = 0
-    if world.options.track_gating.value:
+    track_gating = world.options.track_gating.value
+    min_diff = world.options.min_diff.value
+    if track_gating > 0:
         for track in tracks.get_track_list(world):
-            if track != shortest:
-                number_of_items += 1
-                world.multiworld.itempool.append(world.create_item(track["name"]))
-        world.multiworld.push_precollected(world.create_item(shortest["name"]))
+            if track_gating == 1:
+                if track == shortest:
+                    world.multiworld.push_precollected(world.create_item(track["name"]))
+                    continue
+            elif track_gating == 2:
+                if track["stars"] == min_diff:
+                    world.multiworld.push_precollected(world.create_item(track["name"]))
+                    continue
+            number_of_items += 1
+            world.multiworld.itempool.append(world.create_item(track["name"]))
     
     rating_start = world.options.rating_start.value
     rating_end = world.options.rating.value
@@ -80,7 +88,6 @@ def create_all_items(world: APTromboneWorld) -> None:
         world.multiworld.itempool.append(world.create_item("Rank Reduction"))
 
     diff_gating = world.options.difficulty_gating.value
-    min_diff = world.options.min_diff.value
     max_diff = world.options.max_diff.value
     if diff_gating != 0:
         for i in range(min_diff+1, max_diff+1):

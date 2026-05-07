@@ -24,7 +24,6 @@ class APTromboneWorld(World):
     }
 
     def generate_early(self) -> None:
-        print(f"Chosen goal track: {self.options.goal_track.value}")
         # must have two difficulty levels at minimum
         min_diff = self.options.min_diff
         max_diff = self.options.max_diff
@@ -79,12 +78,7 @@ class APTromboneWorld(World):
                 raise OptionError(f"Goal tracks is 0 and no goal track is set")
             if not goal_track in track_list:
                 raise OptionError(f"Goal track {goal_track["name"]} not in track list")
-        # verify enough locations exist for expected items
-        num_locs = len(track_list) * 2 # TODO: dont double when option to disable "Play: X" locs is enabled
-        num_items = 0
-        track_gating = self.options.track_gating.value
-        if track_gating:
-            num_items += len(track_list) - 1
+        # if difficulty and track gating are both on, verify at least two min_diff tracks exist (placement sometimes fails with one)
         diff_gating = self.options.difficulty_gating.value
         if isinstance(diff_gating, str):
             if diff_gating == "off": diff_gating = 0
@@ -92,14 +86,40 @@ class APTromboneWorld(World):
             elif diff_gating == "progressive": diff_gating = 2
             else: raise OptionError(f"Unknown option for difficulty gating: {diff_gating}")
             self.options.difficulty_gating.value = diff_gating
+        track_gating = self.options.track_gating.value
+        if isinstance(track_gating, str):
+            if track_gating == "off": track_gating = 0
+            elif track_gating == "on": track_gating = 1
+            elif track_gating == "loose": track_gating = 2
+            else: raise OptionError(f"Unknown option for track gating: {track_gating}")
         if diff_gating != 0:
-            num_items += max_diff - min_diff - 1
+            num_min = 0
+            for track in track_list:
+                if track["stars"] == min_diff: num_min += 1
+            if num_min < 2: raise OptionError("Must have at least two tracks at min_diff when difficulty gating is enabled")
+            if num_min < 4 and track_gating > 0: raise OptionError("Must have at least four tracks at min_diff when difficulty gating and track gating are both enabled")
+        # require loose track gating if difficulty gating is enabled
+        if diff_gating != 0 and track_gating == 1:
+            raise OptionError("Track gating cannot be set to On when difficulty gating is enabled, use Loose instead")
+        # verify enough locations exist for expected items
+        num_locs = len(track_list) * 2 # TODO: dont double when option to disable "Play: X" locs is enabled
+        num_items = 0
+        if track_gating == 1:
+            num_items += len(track_list) - 1
+        if track_gating == 2:
+            num_track_items = len(track_list)
+            num_min = 0
+            for track in track_list:
+                if track["stars"] == min_diff: num_min += 1
+            num_track_items -= num_min
+            num_items += num_track_items
+        if diff_gating != 0:
+            num_items += max_diff - min_diff
         num_items += rating_start - rating_end
         num_items += self.options.hot_dogs.value
         num_items += self.options.extra_hot_dogs.value
         if num_locs < num_items:
-            raise OptionError(f"Settings are too restrictive, location count {num_locs} is below item count {num_items}")
-        #raise OptionError(list(map(lambda t: t["name"], track_list)))
+            raise OptionError(f"Settings are too restrictive, location count {num_locs} is below required item count {num_items}")
 
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
