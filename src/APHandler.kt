@@ -12,7 +12,6 @@ class APConnectionManager : WebSocket.Listener {
     companion object {
         private const val GAME_NAME = "Trombone Champ"
         private val AP_VERSION = APNetworkVersion(0, 6, 7)
-        private val GEN_VERSION = APNetworkVersion(1, 0, 0)
     }
 
     private var socket: WebSocket? = null
