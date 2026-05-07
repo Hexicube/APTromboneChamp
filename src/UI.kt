@@ -163,6 +163,8 @@ class MainFrame : JFrame("Tromboner AP Client") {
         var trackEntries = emptyMap<Track, TrackEntry>().toSortedMap { a, b -> a.name.compareTo(b.name) }
         fun updateAllEntries(tracks: List<Track>) {
             // happens when connecting
+            pinnedEntries.clear()
+
             val goalTrack = Track.getGoalTrack(SETTINGS)
             goalTarget.text = if (goalTrack != null) "Goal: " + goalTrack.name
             else "Goal: ${trackList.count { getTrackStatus(it.ID) == TrackStatus.BEATEN }}/${SETTINGS.goalTracks}(${trackList.size}) tracks"
@@ -175,7 +177,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
             if (SETTINGS.diffGating == DifficultyGatingMode.ON) {
                 for (diff in (SETTINGS.minDiff + 1) .. SETTINGS.maxDiff) {
-                    pinnedEntries.add(object : GenericHintableEntry("Difficulty $diff", 101L + diff) {
+                    pinnedEntries.add(object : GenericHintableEntry("Difficulty $diff", 1010L + diff) {
                         override fun getItemRequired() = 1
                         override fun getItemTotal() = 1
                     })
