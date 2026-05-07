@@ -7,27 +7,49 @@ An APWorld and Manual Client for playing Trombone Champ on the Archipelago rando
 Current features:
 
 - Locations for both playing and beating tracks
-- Items for unlocking tracks
+- Items for unlocking tracks and difficulties
 - Items for reducing the required rank to beat a track
 - Options for filtering which tracks are used
 - MacGuffin item to delay playing/goaling final track
 
 YAML settings:
-- goal: 0 for beating goal_track, or above 0 for beating that many tracks (auto-limits to number of tracks available)
-- goal_track: When goal is 0, specifies which track is the goal track
+- goal:
+  - 0: Goal is to beat the track set in goal_track, after collecting the required hot dogs
+  - Above 0: Goal is to beat this number of tracks (auto-limits to number of tracks available)
+- goal_track: Specifies which track is the goal track (ignored if goal is above 0)
+  - Must be exactly the same as a short track name, or "none"
+  - If using the launcher option generator, use removed_tracks to help get the track name
 - rating: required rating to beat a track (C to S)
-- rating_start: initial rating required to beat a track (C to S), Rank Reduction items are created to cover the difference between this and rating
-- easy_track: how many difficulty steps easier than max_diff per increase in required rank (rank A increases to S if this many difficulties below max_diff, B increases to S at double this, etc.), 0 to disable
-- fun_facts: how many Nothing filler items to replace with Fun Fact items, which say one of the game's fun facts in chat (auto-limits to number of fillers)
-- hot_dogs: how many hot dogs are required to unlock the goal track (auto-set to 0 if goal is above 0)
-- extra_hot_dogs: how many extra hot dogs to add to the item pool (auto-set to 0 if goal is above 0, hot_dogs must be above 0)
-- min_diff: minimum track difficulty to include (1-9), the starting track will be the shortest track of this difficulty
-- max_diff: maximum track difficulty to include (2-10), must be higher than min_diff
-- unsafe: if enabled, includes tracks marked as stream-unsafe (Hungarian Dance, Stars & Stripes, W. Post March)
-- celeste: if enabled, includes the Celeste DLC tracks (requires unsafe)
-- pizza: if enabled, includes the Pizza Tower DLC tracks (requires unsafe)
-- toby: if enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
-- removed_tracks: a list of tracks to remove (both items and locations)
+- rating_start: initial rating required to beat a track (C to S)
+  - Rank Reduction items are created to cover the difference between this and rating
+- easy_track: Controls logic for beating tracks based on difficulty and rating settings
+  - Tracks at max_diff always require all difficulty reductions
+  - If set to 0, all tracks require this
+  - If set above 0, every N difficulties below max_diff requires one fewer reductions
+- fun_facts: How many Nothing filler items to replace with Fun Fact items  (auto-limits to number of fillers)
+  - Fun Fact items say a random fun fact from the in-game loading screen
+- hot_dogs: How many hot dogs are required to unlock the goal track (ignored if goal is above 0)
+- extra_hot_dogs: How many extra hot dogs to add to the item pool (ignored if goal is above 0 or hot_dogs is 0)
+- track_gating: off/on/loose
+  - Off: Tracks do not require an item to unlock (could still require a difficulty unlock or hot dogs)
+  - On: Tracks require an item, you start with the shortest min_diff track (cannot be used with difficulty_gating)
+  - Loose: Tracks require an item, you start with all min_diff tracks
+- difficulty_gating: off/on/progressive
+  - Off: Difficulties do not require an item to unlock
+  - On: Difficulties above min_diff require a specific item to unlock
+  - Progressive: Difficulties above min_diff require a progressive item, granting difficulties from easiest to hardest
+- min_diff: Minimum track difficulty to include (1-9)
+  - You always start with tracks from this difficulty if track/difficulty gating is enabled
+- max_diff: Maximum track difficulty to include (2-10)
+  - Must be above min_diff (you always have at least two difficulties)
+- unsafe: If enabled, includes tracks marked as stream-unsafe
+  - Vanilla unsafe tracks: Hungarian Dance, Stars & Stripes, W. Post March
+  - All DLC tracks are considered unsafe
+- celeste: If enabled, includes the Celeste DLC tracks (requires unsafe)
+- pizza: If enabled, includes the Pizza Tower DLC tracks (requires unsafe)
+- toby: If enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
+- removed_tracks: A list of tracks to remove (both items and locations)
+  - All tracks must be exactly the same as short track names
 
 ## Manual Client
 
