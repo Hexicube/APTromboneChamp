@@ -207,7 +207,8 @@ class APConnectionManager : WebSocket.Listener {
                         MainFrame.SETTINGS.goalRating = slotData.get("rating").asInt
                         MainFrame.SETTINGS.startRating = slotData.get("rating_start").asInt
                         MainFrame.SETTINGS.easyTrackGap = slotData.get("easy_track").asInt
-                        // TODO: difficulty gating setting
+                        MainFrame.SETTINGS.trackGating = slotData.get("track_gating").asInt > 0
+                        MainFrame.SETTINGS.diffGating = DifficultyGatingMode.fromID(slotData.get("difficulty_gating").asInt)
                         MainFrame.SETTINGS.hotDogs = slotData.get("hot_dogs").asInt
                         MainFrame.SETTINGS.extraHotDogs = slotData.get("extra_hot_dogs").asInt
                         MainFrame.SETTINGS.minDiff = slotData.get("min_diff").asInt

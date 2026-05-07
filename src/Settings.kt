@@ -1,5 +1,11 @@
-enum class DifficultyGatingMode {
-    OFF, ON, PROG
+enum class DifficultyGatingMode(val id: Int) {
+    OFF(0),
+    ON(1),
+    PROG(2);
+
+    companion object {
+        fun fromID(id: Int) = entries.first { it.id == id }
+    }
 }
 
 data class Settings(
@@ -10,6 +16,7 @@ data class Settings(
     var easyTrackGap: Int,
     var hotDogs: Int,
     var extraHotDogs: Int,
+    var trackGating: Boolean,
     var diffGating: DifficultyGatingMode,
 
     var minDiff: Int,

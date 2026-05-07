@@ -54,7 +54,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
         val SETTINGS = Settings(
             1, null, 3,
-            3, 2, 0, 0, DifficultyGatingMode.OFF,
+            3, 2, 0, 0, true, DifficultyGatingMode.OFF,
             1, 10,
             true, true, true, true,
             emptyList()
@@ -89,7 +89,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
         }
 
         fun getTrackStatus(track: Long): TrackStatus {
-            if (!ITEMS.contains(track)) return TrackStatus.LOCKED
+            if (SETTINGS.trackGating && !ITEMS.contains(track)) return TrackStatus.LOCKED
             if (SETTINGS.diffGating == DifficultyGatingMode.ON) {
                 val diff = trackList.first { it.ID == track }.diff
                 if (diff > SETTINGS.minDiff) {
@@ -636,8 +636,8 @@ class TrackEntry(val track: Track) : HintableEntry() {
             remove(playRewardSpacer)
             remove(hintPlay)
         }
-        if (status != TrackStatus.LOCKED || (track == MainFrame.SETTINGS.goalTrack && MainFrame.ITEMS.contains(track.ID))) {
-            // hide the item location, it's been collected
+        if (!MainFrame.SETTINGS.trackGating || MainFrame.ITEMS.contains(track.ID)) {
+            // hide the item location, it's been collected or  track gating is off
             remove(hintItemSpacer)
             remove(hintItem)
         }
