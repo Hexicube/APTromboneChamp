@@ -159,10 +159,11 @@ class APTromboneWorld(World):
         secs = len_sum % 60
         spoiler_handle.write(f"\nTotal duration: {hrs}:{mins:02}:{secs:02}")
         easy_tracks = tracks.get_easiest_tracks(self)
-        shortest = easy_tracks[0]
-        for track in easy_tracks:
-            if track["duration"] < shortest["duration"]: shortest = track
-        spoiler_handle.write(f"\nStarting Track: {shortest["fullname"]}")
+        if self.options.track_gating == 1:
+            shortest = easy_tracks[0]
+            for track in easy_tracks:
+                if track["duration"] < shortest["duration"]: shortest = track
+            spoiler_handle.write(f"\nStarting Track: {shortest["fullname"]}")
         
         num_tracks_win = self.options.goal.value
         if num_tracks_win == 0:
