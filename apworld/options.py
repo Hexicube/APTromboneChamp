@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, TextChoice, OptionList
+from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle, TextChoice, OptionList
 from . import tracks
 
 # https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/options%20api.md
@@ -76,15 +76,6 @@ class FunFacts(Range):
     range_end = 200
     default = 0
 
-# TODO: gating options
-
-# TrackGating(DefaultOnToggle) - when disabled tracks do not need an item
-
-# DifficultyGating(Choice) - when enabled difficulties require items
-# - Off: no difficulty gating
-# - On: per-difficulty gating
-# - Progressive: start at min_diff and each progressive allows going up one difficulty
-
 class HotDogs(Range):
     """
     How many Hot Dog items are required to unlock the goal track.
@@ -103,6 +94,25 @@ class ExtraHotDogs(Range):
     display_name = "Extra Hot Dogs"
     range_start = 0
     range_end = 20
+    default = 0
+
+class TrackGating(DefaultOnToggle):
+    """
+    If disabled, tracks do not require an item to unlock.
+    """
+    display_name = "Track Gating"
+
+class DifficultyGating(Choice):
+    """
+    Determines how difficulty levels unlock:
+    - Off: Difficulties have no unlock requirement
+    - On: Difficulties require an item to unlock
+    - Progressive: A Progressive Difficulty item unlocks difficulties in order from easiest to hardest
+    """
+    display_name = "Difficulty Gating"
+    option_off = 0
+    option_on = 1
+    option_progressive = 2
     default = 0
 
 # track selection options
@@ -179,6 +189,8 @@ class APTromboneOptions(PerGameCommonOptions):
     fun_facts: FunFacts
     hot_dogs: HotDogs
     extra_hot_dogs: ExtraHotDogs
+    track_gating: TrackGating
+    difficulty_gating: DifficultyGating
     
     min_diff: MinDiff
     max_diff: MaxDiff
@@ -190,12 +202,16 @@ class APTromboneOptions(PerGameCommonOptions):
 
 option_groups = [
     OptionGroup(
-        "Gameplay Options",
-        [GoalTracks, GoalTrack, GoalRating, InitialRating, EasyTrackStarGap, FunFacts, HotDogs, ExtraHotDogs],
+        "Goal Options",
+        [GoalTracks, GoalTrack, GoalRating, InitialRating, HotDogs, ExtraHotDogs]
     ),
     OptionGroup(
-        "Track Options",
-        [MinDiff, MaxDiff, IncludeUnsafe, IncludeCeleste, IncludePizzaTower, IncludeTobyFox, RemovedTracks]
+        "Track List Options",
+        [MinDiff, MaxDiff, EasyTrackStarGap, IncludeUnsafe, IncludeCeleste, IncludePizzaTower, IncludeTobyFox, RemovedTracks]
+    ),
+    OptionGroup(
+        "Item Options",
+        [FunFacts, TrackGating, DifficultyGating],
     )
 ]
 
@@ -208,6 +224,9 @@ option_presets = {
         "easy_track": 3,
         "hot_dogs": 10,
         "extra_hot_dogs": 0,
+
+        "track_gating": True,
+        "difficulty_gating": "progressive",
 
         "min_diff": 3,
         "max_diff": 7,

@@ -62,7 +62,6 @@ class MainFrame : JFrame("Tromboner AP Client") {
 
         var trackList = Track.getTrackList(SETTINGS)
 
-        //val scrollPane = JScrollPane(TABLE)
         val scrollContents = JPanel()
         val scrollPane = JScrollPane(scrollContents)
 
