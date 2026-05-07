@@ -399,7 +399,16 @@ class APConnectionManager : WebSocket.Listener {
                                 }
                                 // temporary: filter out anything not for us or from us (make this a toggle)
                                 if (!isForThisSlot && !isFromThisSlot) continue
-                                MainFrame.addChatMessage(text.toString(), if (isForThisSlot) Color(1f, 1f, .5f) else Color.WHITE)
+
+                                var bg = Color.WHITE
+                                if (isForThisSlot) {
+                                    val itemFlags = APItemFlags.fromID(data.get("item").asJsonObject.get("flags").asInt)
+                                    val isUseful = itemFlags.contains(APItemFlags.ADVANCEMENT) || itemFlags.contains(APItemFlags.VERY_USEFUL)
+                                    val isTrap = itemFlags.contains(APItemFlags.TRAP)
+                                    if (isUseful) bg = Color(1f, 1f, .5f)
+                                }
+
+                                MainFrame.addChatMessage(text.toString(), bg)
                                 continue
                             }
                             "", "Chat", "Join", "Part", "Goal", "Collect", "Release", "TagsChanged" -> {} // general chat or messages with no components
