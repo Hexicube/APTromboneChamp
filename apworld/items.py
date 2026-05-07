@@ -74,10 +74,6 @@ def create_all_items(world: APTromboneWorld) -> None:
     
     rating_start = world.options.rating_start.value
     rating_end = world.options.rating.value
-    if rating_start < rating_end:
-        print("NOTE: Rating start " + str(rating_start) + " is below end, increasing to " + str(rating_end))
-        rating_start = rating_end
-        world.options.rating_start = world.options.rating
     rating_diff = rating_start - rating_end
     for i in range(rating_diff):
         number_of_items += 1
@@ -97,12 +93,10 @@ def create_all_items(world: APTromboneWorld) -> None:
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Hot Dog"))
     
-    number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player))
+    number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player)) - number_of_items
     num_facts = world.options.fun_facts.value
     if num_facts > number_of_unfilled_locations: num_facts = number_of_unfilled_locations
     for i in range(num_facts):
         number_of_unfilled_locations -= 1
         world.multiworld.itempool.append(world.create_item("Fun Fact"))
-    
-    needed_number_of_filler_items = number_of_unfilled_locations - number_of_items
-    world.multiworld.itempool += [world.create_filler() for _ in range(needed_number_of_filler_items)]
+    world.multiworld.itempool += [world.create_filler() for _ in range(number_of_unfilled_locations)]
