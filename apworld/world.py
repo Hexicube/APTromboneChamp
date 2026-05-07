@@ -17,7 +17,10 @@ class APTromboneWorld(World):
     origin_region_name = "Game"
     
     item_name_groups = {
-        "Track": tracks.make_group()
+        "Track": tracks.make_group(),
+        "Difficulty": [
+            "Difficulty 2", "Difficulty 3", "Difficulty 4", "Difficulty 5", "Difficulty 6", "Difficulty 7", "Difficulty 8", "Difficulty 9", "Difficulty 10"
+        ]
     }
 
     def generate_early(self) -> None:
@@ -76,20 +79,24 @@ class APTromboneWorld(World):
                 raise OptionError(f"Goal tracks is 0 and no goal track is set")
             if not goal_track in track_list:
                 raise OptionError(f"Goal track {goal_track["name"]} not in track list")
-        # TODO: verify gating options when added (track+difficulty)
-        # track gating: when enabled, tracks require an item (as it is right now)
-        # difficulty gating:
-        # - off: no gating, difficulties are ignored
-        # - on: each difficulty requires its item before tracks with that difficulty are accessible
-        # - progressive: difficulties require N progressive difficulty items instead, based on how many steps above min_diff they are
-
         # verify enough locations exist for expected items
         num_locs = len(track_list) * 2 # TODO: dont double when option to disable "Play: X" locs is enabled
-        num_items = len(track_list) - 1 # TODO: dont add track gating items when option exists
+        num_items = 0
+        track_gating = self.options.track_gating.value
+        if track_gating:
+            num_items += len(track_list) - 1
+        diff_gating = self.options.difficulty_gating.value
+        if isinstance(diff_gating, str):
+            if diff_gating == "off": diff_gating = 0
+            elif diff_gating == "on": diff_gating = 1
+            elif diff_gating == "progressive": diff_gating = 2
+            else: raise OptionError(f"Unknown option for difficulty gating: {diff_gating}")
+            self.options.difficulty_gating.value = diff_gating
+        if diff_gating != 0:
+            num_items += max_diff - min_diff - 1
         num_items += rating_start - rating_end
         num_items += self.options.hot_dogs.value
         num_items += self.options.extra_hot_dogs.value
-        # TODO: add difficulty gating items when added
         if num_locs < num_items:
             raise OptionError(f"Settings are too restrictive, location count {num_locs} is below item count {num_items}")
         #raise OptionError(list(map(lambda t: t["name"], track_list)))
