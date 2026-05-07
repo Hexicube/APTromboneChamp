@@ -34,7 +34,15 @@ class APTromboneWorld(World):
         rating_end = self.options.rating.value
         if rating_start < rating_end:
             raise OptionError(f"rating_start({rating_start}) is below rating({rating_end})")
+        # verify goal tracks count
+        track_list = tracks.get_track_list(self)
+        goal_track_count = self.options.goal.value
+        if goal_track_count > len(track_list):
+            # auto-reduce this
+            goal_track_count = len(track_list)
+            self.options.goal.value = goal_track_count
         # convert goal track id to name
+        if goal_track_count > 0: self.options.goal_track.value = "none" # ignore it if goal tracks above 0
         goal_track_value = self.options.goal_track.value
         if isinstance(goal_track_value, int) or goal_track_value.isdigit():
             ID = int(goal_track_value)
@@ -51,19 +59,12 @@ class APTromboneWorld(World):
                     raise OptionError(f"Unknown track ID {ID}")
         self.options.goal_track.value = goal_track_value
         # verify track list has no difficulties missing
-        track_list = tracks.get_track_list(self)
         missing_diffs = list(range(min_diff, max_diff+1))
         for track in track_list:
             if track["stars"] in missing_diffs:
                 missing_diffs.remove(track["stars"])
         if missing_diffs:
             raise OptionError(f"Excluded tracks made some difficulties empty: {missing_diffs}")
-        # verify goal tracks count
-        goal_track_count = self.options.goal.value
-        if goal_track_count > len(track_list):
-            # auto-reduce this
-            goal_track_count = len(track_list)
-            self.options.goal.value = goal_track_count
         # set hot dogs and extra hot dogs to 0 if goal tracks count is above 0
         if goal_track_count > 0:
             self.options.hot_dogs.value = 0
