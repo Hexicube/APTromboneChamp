@@ -661,6 +661,8 @@ class TrackEntry(val track: Track) : HintableEntry() {
                 if (e == null) return
                 if (e.clickCount == 2) {
                     if (MainFrame.getTrackStatus(track.ID) == TrackStatus.LOCKED) {
+                        if (!MainFrame.SETTINGS.trackGating) return
+
                         val hint = MainFrame.CONN.findOwnHintItem(track.ID)
                         if (hint != null) return
 
