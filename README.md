@@ -17,11 +17,10 @@ YAML settings:
   - 0: Goal is to beat the track set in goal_track, after collecting the required hot dogs
   - Above 0: Goal is to beat this number of tracks (auto-limits to number of tracks available)
 - goal_track: Specifies which track is the goal track (ignored if goal is above 0)
-  - Must be exactly the same as a short track name, if goal is 0
-    - If using the launcher option generator, use removed_tracks to help get the track name
-  - Must be "none", if goal is above 0
-- rating: required rating to beat a track (C to S)
-- rating_start: initial rating required to beat a track (C to S)
+  - Must be exactly the same as a short track name
+  - If using the launcher option generator, use removed_tracks to help get the track name
+- rating: Required rating to beat a track (C to S)
+- rating_start: Initial rating required to beat a track (C to S)
   - Rank Reduction items are created to cover the difference between this and rating
 - easy_track: Controls logic for beating tracks based on difficulty and rating settings
   - Tracks at max_diff always require all difficulty reductions
@@ -55,6 +54,7 @@ YAML settings:
 - toby: If enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
 - removed_tracks: A list of tracks to remove (both items and locations)
   - All tracks must be exactly the same as short track names
+  - Can include tracks that would be removed for other reasons (such as not enabling a DLC)
 
 Settings limitations:
 - max_diff must be strictly greater than min_diff
@@ -62,8 +62,6 @@ Settings limitations:
 - If goal is 0:
   - There must be a goal_track set, matching one of the available tracks based on other settings
   - If hot_dogs is 0, extra_hot_dogs must also be 0
-- If goal is above 0:
-  - goal_track must be set to none
 - There must be a track at min_diff difficulty
   - *If both difficulty and track gating are enabled, there must be three tracks instead
 - *There must be a track at max_diff difficulty
