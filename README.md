@@ -17,8 +17,9 @@ YAML settings:
   - 0: Goal is to beat the track set in goal_track, after collecting the required hot dogs
   - Above 0: Goal is to beat this number of tracks (auto-limits to number of tracks available)
 - goal_track: Specifies which track is the goal track (ignored if goal is above 0)
-  - Must be exactly the same as a short track name, or "none"
-  - If using the launcher option generator, use removed_tracks to help get the track name
+  - Must be exactly the same as a short track name, if goal is 0
+    - If using the launcher option generator, use removed_tracks to help get the track name
+  - Must be "none", if goal is above 0
 - rating: required rating to beat a track (C to S)
 - rating_start: initial rating required to beat a track (C to S)
   - Rank Reduction items are created to cover the difference between this and rating
@@ -29,17 +30,21 @@ YAML settings:
 - fun_facts: How many Nothing filler items to replace with Fun Fact items  (auto-limits to number of fillers)
   - Fun Fact items say a random fun fact from the in-game loading screen
 - hot_dogs: How many hot dogs are required to unlock the goal track (ignored if goal is above 0)
-- extra_hot_dogs: How many extra hot dogs to add to the item pool (ignored if goal is above 0 or hot_dogs is 0)
+- extra_hot_dogs: How many extra hot dogs to add to the item pool (ignored if goal is above 0)
 - track_gating: off/on/loose
-  - Off: Tracks do not require an item to unlock (could still require a difficulty unlock or hot dogs)
-  - On: Tracks require an item, you start with the shortest min_diff track (cannot be used with difficulty_gating)
+  - Off: Tracks do not require an item to unlock
+  - On: Tracks require an item, you start with the shortest min_diff track
   - Loose: Tracks require an item, you start with all min_diff tracks
+  - Tracks may still require unlocking their difficulty and/or collecting hot dogs for the goal track
 - difficulty_gating: off/on/progressive
   - Off: Difficulties do not require an item to unlock
   - On: Difficulties above min_diff require a specific item to unlock
   - Progressive: Difficulties above min_diff require a progressive item, granting difficulties from easiest to hardest
 - min_diff: Minimum track difficulty to include (1-9)
-  - You always start with tracks from this difficulty if track/difficulty gating is enabled
+  - You always start with tracks from this difficulty
+    - If track gating is On, you start with the shortest min_diff track
+    - If track gating is Loose, you start with all min_diff tracks
+    - If difficulty gating is enabled, you start with min_diff difficulty
 - max_diff: Maximum track difficulty to include (2-10)
   - Must be above min_diff (you always have at least two difficulties)
 - unsafe: If enabled, includes tracks marked as stream-unsafe
@@ -50,6 +55,27 @@ YAML settings:
 - toby: If enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
 - removed_tracks: A list of tracks to remove (both items and locations)
   - All tracks must be exactly the same as short track names
+
+Settings limitations:
+- max_diff must be strictly greater than min_diff
+- rating must not be lower than rating_start
+- If goal is 0:
+  - There must be a goal_track set, matching one of the available tracks based on other settings
+  - If hot_dogs is 0, extra_hot_dogs must also be 0
+- If goal is above 0:
+  - goal_track must be set to none
+- There must be a track at min_diff difficulty
+  - *If both difficulty and track gating are enabled, there must be three tracks instead
+- *There must be a track at max_diff difficulty
+- *If difficulty gating is enabled, all difficulties (min_diff to max_diff) must have tracks
+- *If difficulty gating is enabled, track gating cannot be set to On
+- *If track gating is enabled, min_diff tracks must not require Rank Reduction items
+- If track gating is On and a goal track is set, the goal track cannot be the shortest min_diff track (this is the starting track)
+- There must be enough tracks to place all items
+  - *There must also be space for two filler items, as one track will be the final track played
+
+Entries with an asterisk can be bypassed via enabling the hidden option bypass_options.
+Enabling this may cause slow generation or failures, especially solo; use at your own risk.
 
 ## Manual Client
 

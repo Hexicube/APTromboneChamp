@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle, TextChoice, OptionList
+from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle, TextChoice, OptionList, Visibility
 from . import tracks
 
 # https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/options%20api.md
@@ -187,6 +187,14 @@ class RemovedTracks(OptionList):
 
 # TODO: DisablePlayLocations(Toggle) - when enabled, removes the "Play: X" locations (halves location count)
 
+class OptionLimitBypass(Toggle):
+    """
+    If enabled, bypasses option restrictions that throw an OptionError but are not strictly mistakes.
+    WARNING: This may result in generation failures, especially solo.
+    """
+    visibility = Visibility.none
+    display_name = "Bypass Option Restrictions"
+
 @dataclass
 class APTromboneOptions(PerGameCommonOptions):
     goal: GoalTracks
@@ -207,6 +215,8 @@ class APTromboneOptions(PerGameCommonOptions):
     pizza: IncludePizzaTower
     toby: IncludeTobyFox
     removed_tracks: RemovedTracks
+
+    bypass_options: OptionLimitBypass
 
 option_groups = [
     OptionGroup(

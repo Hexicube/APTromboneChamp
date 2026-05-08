@@ -27,7 +27,7 @@ ITEM_CLASS = {
     "Rank Reduction": ItemClassification.progression | ItemClassification.useful,
     "Nothing": ItemClassification.filler,
     "Fun Fact": ItemClassification.filler,
-    "Hot Dog": ItemClassification.progression | ItemClassification.useful,
+    "Hot Dog": ItemClassification.progression,
     "Progressive Difficulty": ItemClassification.progression | ItemClassification.useful,
     "Difficulty 2": ItemClassification.progression | ItemClassification.useful,
     "Difficulty 3": ItemClassification.progression | ItemClassification.useful,

@@ -9,9 +9,6 @@ if TYPE_CHECKING:
     from .world import APTromboneWorld
 
 def set_all_rules(world: APTromboneWorld) -> None:
-    hard_tracks = tracks.get_hardest_tracks(world)
-    hardest_diff = hard_tracks[0]["stars"]
-    
     rating_start = world.options.rating_start.value
     rating_end = world.options.rating.value
     rating_diff = rating_start - rating_end
@@ -31,7 +28,7 @@ def set_all_rules(world: APTromboneWorld) -> None:
     if num_tracks_win == 0:
         if rating_diff > 0:
             for track in track_list:
-                track_diff = (hardest_diff - track["stars"])
+                track_diff = (max_diff - track["stars"])
                 if rating_gap > 0: track_diff = track_diff // rating_gap
                 required = rating_diff - track_diff
                 if required > 0:
