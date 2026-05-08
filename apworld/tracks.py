@@ -38,7 +38,7 @@ TRACK_LIST = [
     track( 20, "Funiculi Funicula", "Funiculi, Funicula", 6, 2 * 60 + 1),
     track( 21, "Gladiators", "Entry of the Gladiators", 8, 1 * 60 + 23),
     track( 22, "God Save The King", "God Save The King", 2, 1 * 60 + 7),
-    track( 23, "Gymnopédie No. 1", "Gymnopédie No. 1", 5, 2 * 60 + 35),
+    track( 23, "Gymnopédie", "Gymnopédie No. 1", 5, 2 * 60 + 35),
     track( 24, "Habanera", "Habanera (From Carmen)", 5, 3 * 60 + 16),
     track( 25, "Happy Birthday", "Happy Birthday to You (Ska Mix)", 5, 1 * 60 + 24),
     track( 26, "Hava Nagila", "Hava Nagila", 5, 2 * 60 + 3),
