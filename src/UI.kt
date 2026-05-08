@@ -176,12 +176,7 @@ class MainFrame : JFrame("Tromboner AP Client") {
             })
 
             if (SETTINGS.diffGating == DifficultyGatingMode.ON) {
-                for (diff in (SETTINGS.minDiff + 1) .. SETTINGS.maxDiff) {
-                    pinnedEntries.add(object : GenericHintableEntry("Difficulty $diff", 1010L + diff) {
-                        override fun getItemRequired() = 1
-                        override fun getItemTotal() = 1
-                    })
-                }
+                pinnedEntries.add(DifficultyEntry())
             }
             if (SETTINGS.diffGating == DifficultyGatingMode.PROG) {
                 val needed = SETTINGS.maxDiff - SETTINGS.minDiff
@@ -543,6 +538,90 @@ abstract class GenericHintableEntry(val itemName: String, val itemID: Long) : Hi
         for (a in 0 until hintList.size) {
             if (a >= hintInfo.size) hintList[a].setItemData(null)
             else hintList[a].setItemData(hintInfo[a])
+        }
+    }
+}
+
+class DifficultyEntry : HintableEntry() {
+    val diffSpacers = Array(11) { makeSpacer() }
+    val diffHints = Array(11) { HintLabel("Difficulty $it") }
+    val diffSet = (MainFrame.SETTINGS.minDiff + 1 .. MainFrame.SETTINGS.maxDiff).toList()
+    val itemCount = titleText("0/0")
+
+    init {
+        background = Color(.8f, 1f, 1f)
+
+
+        val titlePane = JPanel()
+        titlePane.isOpaque = false
+        titlePane.layout = BoxLayout(titlePane, BoxLayout.X_AXIS)
+        add(titlePane)
+
+        titlePane.add(titleText("Difficulty Unlocks"))
+        titlePane.add(Box.createHorizontalGlue())
+        titlePane.add(itemCount)
+
+        val listener = object : MouseAdapter() {
+            override fun mousePressed(e: MouseEvent?) {
+                if (e == null) return
+                if (e.clickCount == 2) {
+                    val unhinted = diffSet.filter {
+                        if (MainFrame.ITEMS.contains(1010L + it)) false
+                        else MainFrame.CONN.findOwnHintItem(1010L + it) == null
+                    }.toList()
+                    if (unhinted.isEmpty()) return
+
+                    val pts = MainFrame.CONN.hintPoints
+                    val cost = MainFrame.CONN.hintCost
+                    if (pts < cost) {
+                        JOptionPane.showMessageDialog(
+                            MainFrame.INST, "Can't afford hint.\nCosts $cost, you have $pts.",
+                            "Can't afford hint", JOptionPane.PLAIN_MESSAGE
+                        )
+                    }
+                    else {
+                        val res = JOptionPane.showOptionDialog(
+                            MainFrame.INST, "Hint difficulty?\n${if (cost == 0) "Hints are free!" else "Costs $cost, you have $pts."}", "Hint Difficulty",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                            null, unhinted.map { "Difficulty $it" }.toTypedArray(), null
+                        )
+                        if (res != JOptionPane.CLOSED_OPTION) {
+                            val chosen = unhinted[res]
+                            MainFrame.CONN.requestItemHint(1010L + chosen)
+                        }
+                    }
+                }
+            }
+        }
+        addMouseListener(listener)
+
+        for (a in diffSet) {
+            add(diffSpacers[a])
+            add(diffHints[a])
+            diffHints[a].addMouseListener(listener)
+        }
+
+        update()
+        updateHints()
+    }
+
+    override fun update() {
+        var count = 0
+        for (a in diffSet) {
+            val hasItem = MainFrame.ITEMS.contains(1010L + a)
+            if (hasItem) {
+                count++
+                remove(diffSpacers[a])
+                remove(diffHints[a])
+            }
+        }
+        itemCount.text = "$count/${diffSet.size}"
+    }
+
+    override fun updateHints() {
+        for (a in MainFrame.SETTINGS.minDiff + 1 .. MainFrame.SETTINGS.maxDiff) {
+            val hint = MainFrame.CONN.findOwnHintItem(1010L + a)
+            diffHints[a].setItemData(hint)
         }
     }
 }
