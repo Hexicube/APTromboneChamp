@@ -117,27 +117,27 @@ TRACK_LIST = [
     track(263, "Unexpectancy", "Unexpectancy (Part 2 of 3)", 9, 2 * 60 + 59, True, "Pizza Tower"),
     track(264, "Yeehaw", "Yeehaw Deliveryboy", 8, 2 * 60 + 7, True, "Pizza Tower"),
     # undertale / deltarune
-    track(301, "Asgore", "Asgore", 8, 2 * 60 + 36, True, "Toby Fox"),
-    track(302, "Big Shot", "Big Shot", 7, 2 * 60 + 24, True, "Toby Fox"),
-    track(303, "Black Knife", "Black Knife", 7, 1 * 60 + 59, True, "Toby Fox"),
-    track(304, "Bonetrousle", "Bonetrousle", 8, 60, True, "Toby Fox"),
-    track(305, "Cyber's World?", "A Cyber's World?", 7, 2 * 60 + 48, True, "Toby Fox"),
-    track(306, "Dark Sanctuary", "Dark Sanctuary + Neverending Night", 7, 3 * 60 + 6, True, "Toby Fox"),
-    track(307, "Dummy!", "Dummy!", 9, 2 * 60 + 29, True, "Toby Fox"),
-    track(308, "Guardian", "Guardian", 8, 3 * 60 + 30, True, "Toby Fox"),
-    track(309, "Hopes and Dreams", "Hopes and Dreams", 8, 3 * 60 + 3, True, "Toby Fox"),
-    track(310, "It's TV Time!", "It's TV Time!", 8, 2 * 60 + 48, True, "Toby Fox"),
-    track(311, "Killer Queen", "Attack of the Killer Queen", 8, 2 * 60 + 3, True, "Toby Fox"),
-    track(312, "Megalovania", "Megalovania", 9, 2 * 60 + 39, True, "Toby Fox"),
-    track(313, "Metal Crusher", "Metal Crusher", 9, 1 * 60 + 5, True, "Toby Fox"),
-    track(314, "Pandora Palace", "Pandora Palace", 7, 1 * 60 + 40, True, "Toby Fox"),
-    track(315, "Rude Buster", "Rude Buster", 9, 1 * 60 + 19, True, "Toby Fox"),
-    track(316, "Scarlet Forest", "Scarlet Forest", 6, 2 * 60 + 12, True, "Toby Fox"),
-    track(317, "Sword", "Sword", 7, 1 * 60 + 50, True, "Toby Fox"),
-    track(318, "Third Sanctuary", "The Third Sanctuary", 9, 4 * 60 + 8, True, "Toby Fox"),
-    track(319, "True Hero", "Battle Against a True Hero", 8, 2 * 60 + 36, True, "Toby Fox"),
-    track(320, "TV World", "TV World", 7, 2 * 60 + 12, True, "Toby Fox"),
-    track(321, "World Revolving", "The World Revolving", 8, 1 * 60 + 44, True, "Toby Fox"),
+    track(301, "Asgore", "Asgore", 8, 2 * 60 + 36, True, "UTDR"),
+    track(302, "Big Shot", "Big Shot", 7, 2 * 60 + 24, True, "UTDR"),
+    track(303, "Black Knife", "Black Knife", 7, 1 * 60 + 59, True, "UTDR"),
+    track(304, "Bonetrousle", "Bonetrousle", 8, 60, True, "UTDR"),
+    track(305, "Cyber's World?", "A Cyber's World?", 7, 2 * 60 + 48, True, "UTDR"),
+    track(306, "Dark Sanctuary", "Dark Sanctuary + Neverending Night", 7, 3 * 60 + 6, True, "UTDR"),
+    track(307, "Dummy!", "Dummy!", 9, 2 * 60 + 29, True, "UTDR"),
+    track(308, "Guardian", "Guardian", 8, 3 * 60 + 30, True, "UTDR"),
+    track(309, "Hopes and Dreams", "Hopes and Dreams", 8, 3 * 60 + 3, True, "UTDR"),
+    track(310, "It's TV Time!", "It's TV Time!", 8, 2 * 60 + 48, True, "UTDR"),
+    track(311, "Killer Queen", "Attack of the Killer Queen", 8, 2 * 60 + 3, True, "UTDR"),
+    track(312, "Megalovania", "Megalovania", 9, 2 * 60 + 39, True, "UTDR"),
+    track(313, "Metal Crusher", "Metal Crusher", 9, 1 * 60 + 5, True, "UTDR"),
+    track(314, "Pandora Palace", "Pandora Palace", 7, 1 * 60 + 40, True, "UTDR"),
+    track(315, "Rude Buster", "Rude Buster", 9, 1 * 60 + 19, True, "UTDR"),
+    track(316, "Scarlet Forest", "Scarlet Forest", 6, 2 * 60 + 12, True, "UTDR"),
+    track(317, "Sword", "Sword", 7, 1 * 60 + 50, True, "UTDR"),
+    track(318, "Third Sanctuary", "The Third Sanctuary", 9, 4 * 60 + 8, True, "UTDR"),
+    track(319, "True Hero", "Battle Against a True Hero", 8, 2 * 60 + 36, True, "UTDR"),
+    track(320, "TV World", "TV World", 7, 2 * 60 + 12, True, "UTDR"),
+    track(321, "World Revolving", "The World Revolving", 8, 1 * 60 + 44, True, "UTDR"),
 ]
 
 def get_track_list(world):
@@ -145,18 +145,18 @@ def get_track_list(world):
     max_diff = world.options.max_diff.value
     excludes = world.options.removed_tracks.value
     
-    unsafe = world.options.unsafe
-    celeste = world.options.celeste
-    pizza = world.options.pizza
-    toby = world.options.toby
+    unsafe = world.options.unsafe.value
+    celeste = world.options.celeste.value
+    pizza_tower = world.options.pizza_tower.value
+    utdr = world.options.undertale_deltarune.value
     tracks = []
     for track in TRACK_LIST:
         if track["stars"] < min_diff: continue
         if track["stars"] > max_diff: continue
         if track["unsafe"] and not unsafe: continue
         if track["DLC"] == "Celeste" and not celeste: continue
-        if track["DLC"] == "Pizza Tower" and not pizza: continue
-        if track["DLC"] == "Toby Fox" and not toby: continue
+        if track["DLC"] == "Pizza Tower" and not pizza_tower: continue
+        if track["DLC"] == "UTDR" and not utdr: continue
         if track["name"] in excludes: continue
         tracks.append(track)
     return tracks

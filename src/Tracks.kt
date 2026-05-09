@@ -108,27 +108,27 @@ data class Track(
             Track(263, "Unexpectancy", "Unexpectancy (Part 2 of 3)", 9, 2 * 60 + 59, true, "Pizza Tower"),
             Track(264, "Yeehaw", "Yeehaw Deliveryboy", 8, 2 * 60 + 7, true, "Pizza Tower"),
             // undertale / deltarune
-            Track(301, "Asgore", "Asgore", 8, 2 * 60 + 36, true, "Toby Fox"),
-            Track(302, "Big Shot", "Big Shot", 7, 2 * 60 + 24, true, "Toby Fox"),
-            Track(303, "Black Knife", "Black Knife", 7, 1 * 60 + 59, true, "Toby Fox"),
-            Track(304, "Bonetrousle", "Bonetrousle", 8, 60, true, "Toby Fox"),
-            Track(305, "Cyber's World?", "A Cyber's World?", 7, 2 * 60 + 48, true, "Toby Fox"),
-            Track(306, "Dark Sanctuary", "Dark Sanctuary + Neverending Night", 7, 3 * 60 + 6, true, "Toby Fox"),
-            Track(307, "Dummy!", "Dummy!", 9, 2 * 60 + 29, true, "Toby Fox"),
-            Track(308, "Guardian", "Guardian", 8, 3 * 60 + 30, true, "Toby Fox"),
-            Track(309, "Hopes and Dreams", "Hopes and Dreams", 8, 3 * 60 + 3, true, "Toby Fox"),
-            Track(310, "It's TV Time!", "It's TV Time!", 8, 2 * 60 + 48, true, "Toby Fox"),
-            Track(311, "Killer Queen", "Attack of the Killer Queen", 8, 2 * 60 + 3, true, "Toby Fox"),
-            Track(312, "Megalovania", "Megalovania", 9, 2 * 60 + 39, true, "Toby Fox"),
-            Track(313, "Metal Crusher", "Metal Crusher", 9, 1 * 60 + 5, true, "Toby Fox"),
-            Track(314, "Pandora Palace", "Pandora Palace", 7, 1 * 60 + 40, true, "Toby Fox"),
-            Track(315, "Rude Buster", "Rude Buster", 9, 1 * 60 + 19, true, "Toby Fox"),
-            Track(316, "Scarlet Forest", "Scarlet Forest", 6, 2 * 60 + 12, true, "Toby Fox"),
-            Track(317, "Sword", "Sword", 7, 1 * 60 + 50, true, "Toby Fox"),
-            Track(318, "Third Sanctuary", "The Third Sanctuary", 9, 4 * 60 + 8, true, "Toby Fox"),
-            Track(319, "True Hero", "Battle Against a True Hero", 8, 2 * 60 + 36, true, "Toby Fox"),
-            Track(320, "TV World", "TV World", 7, 2 * 60 + 12, true, "Toby Fox"),
-            Track(321, "World Revolving", "The World Revolving", 8, 1 * 60 + 44, true, "Toby Fox"),
+            Track(301, "Asgore", "Asgore", 8, 2 * 60 + 36, true, "UTDR"),
+            Track(302, "Big Shot", "Big Shot", 7, 2 * 60 + 24, true, "UTDR"),
+            Track(303, "Black Knife", "Black Knife", 7, 1 * 60 + 59, true, "UTDR"),
+            Track(304, "Bonetrousle", "Bonetrousle", 8, 60, true, "UTDR"),
+            Track(305, "Cyber's World?", "A Cyber's World?", 7, 2 * 60 + 48, true, "UTDR"),
+            Track(306, "Dark Sanctuary", "Dark Sanctuary + Neverending Night", 7, 3 * 60 + 6, true, "UTDR"),
+            Track(307, "Dummy!", "Dummy!", 9, 2 * 60 + 29, true, "UTDR"),
+            Track(308, "Guardian", "Guardian", 8, 3 * 60 + 30, true, "UTDR"),
+            Track(309, "Hopes and Dreams", "Hopes and Dreams", 8, 3 * 60 + 3, true, "UTDR"),
+            Track(310, "It's TV Time!", "It's TV Time!", 8, 2 * 60 + 48, true, "UTDR"),
+            Track(311, "Killer Queen", "Attack of the Killer Queen", 8, 2 * 60 + 3, true, "UTDR"),
+            Track(312, "Megalovania", "Megalovania", 9, 2 * 60 + 39, true, "UTDR"),
+            Track(313, "Metal Crusher", "Metal Crusher", 9, 1 * 60 + 5, true, "UTDR"),
+            Track(314, "Pandora Palace", "Pandora Palace", 7, 1 * 60 + 40, true, "UTDR"),
+            Track(315, "Rude Buster", "Rude Buster", 9, 1 * 60 + 19, true, "UTDR"),
+            Track(316, "Scarlet Forest", "Scarlet Forest", 6, 2 * 60 + 12, true, "UTDR"),
+            Track(317, "Sword", "Sword", 7, 1 * 60 + 50, true, "UTDR"),
+            Track(318, "Third Sanctuary", "The Third Sanctuary", 9, 4 * 60 + 8, true, "UTDR"),
+            Track(319, "True Hero", "Battle Against a True Hero", 8, 2 * 60 + 36, true, "UTDR"),
+            Track(320, "TV World", "TV World", 7, 2 * 60 + 12, true, "UTDR"),
+            Track(321, "World Revolving", "The World Revolving", 8, 1 * 60 + 44, true, "UTDR"),
         )
 
         public fun getTrackList(settings: Settings): List<Track> {
@@ -139,8 +139,8 @@ data class Track(
                 (
                     track.DLC == "Base" ||
                     (track.DLC == "Celeste" && settings.celeste) ||
-                    (track.DLC == "Pizza Tower" && settings.pizza) ||
-                    (track.DLC == "Toby Fox" && settings.toby)
+                    (track.DLC == "Pizza Tower" && settings.pizza_tower) ||
+                    (track.DLC == "UTDR" && settings.undertale_deltarune)
                 ) &&
                 !settings.removedTracks.contains(track)
             }

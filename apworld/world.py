@@ -172,7 +172,7 @@ class APTromboneWorld(World):
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict(
             "goal", "goal_track", "rating", "rating_start", "easy_track", "fun_facts", "hot_dogs", "extra_hot_dogs", "track_gating", "difficulty_gating",
-            "min_diff", "max_diff", "unsafe", "celeste", "pizza", "toby", "removed_tracks"
+            "min_diff", "max_diff", "unsafe", "celeste", "pizza_tower", "undertale_deltarune", "removed_tracks"
         )
     
     def write_spoiler(self, spoiler_handle: TextIO) -> None:

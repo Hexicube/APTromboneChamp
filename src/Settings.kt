@@ -23,7 +23,7 @@ data class Settings(
     var maxDiff: Int,
     var unsafe: Boolean,
     var celeste: Boolean,
-    var pizza: Boolean,
-    var toby: Boolean,
+    var pizza_tower: Boolean,
+    var undertale_deltarune: Boolean,
     var removedTracks: List<Track>
 )

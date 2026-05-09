@@ -212,8 +212,8 @@ class APTromboneOptions(PerGameCommonOptions):
     max_diff: MaxDiff
     unsafe: IncludeUnsafe
     celeste: IncludeCeleste
-    pizza: IncludePizzaTower
-    toby: IncludeTobyFox
+    pizza_tower: IncludePizzaTower
+    undertale_deltarune: IncludeTobyFox
     removed_tracks: RemovedTracks
 
     bypass_options: OptionLimitBypass
@@ -250,8 +250,8 @@ option_presets = {
         "max_diff": 7,
         "unsafe": False,
         "celeste": False,
-        "pizza": False,
-        "toby": False,
+        "pizza_tower": False,
+        "undertale_deltarune": False,
         "removed_tracks": []
     }
 }

@@ -50,8 +50,8 @@ YAML settings:
   - Vanilla unsafe tracks: Hungarian Dance, Stars & Stripes, W. Post March
   - All DLC tracks are considered unsafe
 - celeste: If enabled, includes the Celeste DLC tracks (requires unsafe)
-- pizza: If enabled, includes the Pizza Tower DLC tracks (requires unsafe)
-- toby: If enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
+- pizza_tower: If enabled, includes the Pizza Tower DLC tracks (requires unsafe)
+- undertale_deltarune: If enabled, includes the Undertale/Deltarune DLC tracks (requires unsafe)
 - removed_tracks: A list of tracks to remove (both items and locations)
   - All tracks must be exactly the same as short track names
   - Can include tracks that would be removed for other reasons (such as not enabling a DLC)

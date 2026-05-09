@@ -1,4 +1,3 @@
-import MainFrame.Companion.CONN
 import com.google.gson.*
 import java.awt.Color
 import java.net.URI
@@ -214,8 +213,8 @@ class APConnectionManager : WebSocket.Listener {
                         MainFrame.SETTINGS.maxDiff = slotData.get("max_diff").asInt
                         MainFrame.SETTINGS.unsafe = slotData.get("unsafe").asInt == 1
                         MainFrame.SETTINGS.celeste = slotData.get("celeste").asInt == 1
-                        MainFrame.SETTINGS.pizza = slotData.get("pizza").asInt == 1
-                        MainFrame.SETTINGS.toby = slotData.get("toby").asInt == 1
+                        MainFrame.SETTINGS.pizza_tower = slotData.get("pizza_tower").asInt == 1
+                        MainFrame.SETTINGS.undertale_deltarune = slotData.get("undertale_deltarune").asInt == 1
                         MainFrame.SETTINGS.removedTracks = slotData.get("removed_tracks").asJsonArray.map { name ->
                             Track.TRACK_LIST.first { it.name == name.asString }
                         }
