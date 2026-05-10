@@ -31,7 +31,7 @@ TRACK_LIST = [
     track( 13, "Commander Tokyo", "Commander Tokyo, The Dancing Robot", 9, 1 * 60 + 36),
     track( 14, "Danny Boy", "Danny Boy", 3, 1 * 60 + 58),
     track( 15, "Danse Macabre", "Danse Macabre", 8, 2 * 60 + 52),
-    track( 16, "Eine (Champ Mix)", "Eine Kleine (Champ Mix)", 10, 1 * 60 + 41),
+    track( 16, "Eine (CHAMP MIX)", "Eine Kleine (Champ Mix)", 10, 1 * 60 + 41),
     track( 17, "Eine Kleine", "Eine Kleine Nachtmusik (Trap Mix)", 5, 1 * 60 + 55),
     track( 18, "Entertainer", "The Entertainer", 7, 1 * 60 + 17),
     track( 19, "Four Seasons (Summer)", "The Four Seasons (Summer)", 9, 3 * 60 + 5),
