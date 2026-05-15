@@ -48,7 +48,8 @@ class MainFrame : JFrame("Tromboner AP Client") {
             "The highest note playable on trombones is so high-pitched that only certain species of bats can hear it.",
             "The world record for \"Most Trombones Owned\" is held by Mike Brass of Omaha, Nebraska. He owns two trombones.",
             "It takes over three thousand tons of brass to produce a single trombone.",
-            "In real life, there are over nine songs that feature a trombone."
+            "In real life, there are over nine songs that feature a trombone.",
+            "In England, \"trombone\" is spelled \"troumboune\"."
         )
         val CUR_FACTS = ArrayList<String>()
 
@@ -662,6 +663,8 @@ class TrackEntry(val track: Track) : HintableEntry() {
                 if (e.clickCount == 2) {
                     if (MainFrame.getTrackStatus(track.ID) == TrackStatus.LOCKED) {
                         if (!MainFrame.SETTINGS.trackGating) return
+
+                        if (!MainFrame.SETTINGS.trackGating || MainFrame.ITEMS.contains(track.ID)) return // something else is locking it
 
                         val hint = MainFrame.CONN.findOwnHintItem(track.ID)
                         if (hint != null) return
