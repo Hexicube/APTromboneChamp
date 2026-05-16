@@ -2,6 +2,10 @@
 
 An APWorld and Manual Client for playing Trombone Champ on the Archipelago randomiser.
 
+## Mod Client
+
+A modded client can be found here: https://github.com/Hexicube/APTromboneChampMod/
+
 ## APWorld
 
 Current features:
