@@ -15,6 +15,7 @@ Current features:
 - Items for reducing the required rank to beat a track
 - Options for filtering which tracks are used
 - MacGuffin item to delay playing/goaling final track
+- Traps to make it harder to beat tracks
 
 YAML settings:
 - goal:
@@ -59,6 +60,11 @@ YAML settings:
 - removed_tracks: A list of tracks to remove (both items and locations)
   - All tracks must be exactly the same as short track names
   - Can include tracks that would be removed for other reasons (such as not enabling a DLC)
+- trap_flip: How many Flip Controls traps to add
+- trap_deaf: How many Silence Track traps to add
+- trap_mute: How many Silence Trombone traps to add
+- trap_hide: How many Hide Notes traps to add
+- trap_breath: How many No Breath traps to add
 
 Settings limitations:
 - max_diff must be strictly greater than min_diff
@@ -74,6 +80,8 @@ Settings limitations:
 - *If track gating is enabled, min_diff tracks must not require Rank Reduction items
 - If track gating is On and a goal track is set, the goal track cannot be the shortest min_diff track (this is the starting track)
 - There must be enough tracks to place all items
+  - This includes trap items, generation will fail rather than reducing how many traps there are
+  - This does NOT include Fun Fact items, which replace Nothing items
   - *There must also be space for two filler items, as one track will be the final track played
 
 Entries with an asterisk can be bypassed via enabling the hidden option bypass_options.
