@@ -214,4 +214,4 @@ class APTromboneWorld(World):
             spoiler_handle.write(f"\nGoal Track: {goal_track["fullname"]}")
         else:
             if num_tracks_win > len(track_list): num_tracks_win = len(track_list)
-            spoiler_handle.write(f"\nGoal Tracks Count: ${num_tracks_win}")
+            spoiler_handle.write(f"\nGoal Tracks Count: {num_tracks_win}")
