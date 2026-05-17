@@ -132,6 +132,7 @@ class APTromboneWorld(World):
         # verify enough locations exist for expected items
         num_locs = len(track_list) * 2 # TODO: dont double when option to disable "Play: X" locs is enabled
         num_items = 0
+
         if track_gating == 1:
             num_items += len(track_list) - 1
         if track_gating == 2:
@@ -141,11 +142,21 @@ class APTromboneWorld(World):
                 if track["stars"] == min_diff: num_min += 1
             num_track_items -= num_min
             num_items += num_track_items
+
         if diff_gating != 0:
             num_items += max_diff - min_diff
+
         num_items += rating_start - rating_end
+
         num_items += self.options.hot_dogs.value
         num_items += self.options.extra_hot_dogs.value
+
+        num_items += self.options.trap_flip.value
+        num_items += self.options.trap_deaf.value
+        num_items += self.options.trap_mute.value
+        num_items += self.options.trap_hide.value
+        num_items += self.options.trap_breath.value
+
         if num_locs-2 < num_items: # NOTE: num_locs reduced by two as there will always be a final track to play
             if bypass:
                 if num_locs < num_items:

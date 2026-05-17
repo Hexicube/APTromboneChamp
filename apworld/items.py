@@ -113,6 +113,22 @@ def create_all_items(world: APTromboneWorld) -> None:
     for i in range(world.options.hot_dogs.value + world.options.extra_hot_dogs.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Hot Dog"))
+
+    for i in range(self.options.trap_flip.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("Flip Controls Trap"))
+    for i in range(self.options.trap_deaf.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("Silence Track Trap"))
+    for i in range(self.options.trap_mute.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("Silence Trombone Trap"))
+    for i in range(self.options.trap_hide.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("Hide Notes Trap"))
+    for i in range(self.options.trap_breath.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("No Breath Trap"))
     
     number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player)) - number_of_items
     num_facts = world.options.fun_facts.value
