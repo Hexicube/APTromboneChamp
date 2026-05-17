@@ -123,7 +123,7 @@ class APTromboneWorld(World):
                     raise OptionError("Track gating is enabled and min_diff tracks require Rank Reduction items")
         # if track gating is On and a goal track is set, verify they are not the same track
         if track_gating == 1 and goal_track:
-            easy_tracks = tracks.get_easiest_tracks(world)
+            easy_tracks = tracks.get_easiest_tracks(self)
             shortest = easy_tracks[0]
             for track in easy_tracks:
                 if track["duration"] < shortest["duration"]: shortest = track
