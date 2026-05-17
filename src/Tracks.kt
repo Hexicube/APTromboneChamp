@@ -46,7 +46,7 @@ data class Track(
             Track( 37, "Marseillaise", "La Marseillaise", 7, 1 * 60 + 20),
             Track( 38, "Martian Killbots", "Martial Killbots!!!", 3, 2 * 60 + 0),
             Track( 39, "Merry Gentlemen", "God Rest ye Merry, Gentlemen", 7, 1 * 60 + 55),
-            Track( 40, "Mountain King", "In The Hell of The Mountain King", 8, 2 * 60 + 30),
+            Track( 40, "Mountain King", "In The Hall of The Mountain King", 8, 2 * 60 + 30),
             Track( 41, "O Canada", "O Canada", 3, 1 * 60 + 8),
             Track( 42, "O Christmas Tree", "O Christmas Tree", 4, 2 * 60 + 25),
             Track( 43, "Ode to Joy", "Ode to Joy", 2, 1 * 60 + 43),

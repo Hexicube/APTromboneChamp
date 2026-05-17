@@ -55,7 +55,7 @@ TRACK_LIST = [
     track( 37, "Marseillaise", "La Marseillaise", 7, 1 * 60 + 20),
     track( 38, "Martian Killbots", "Martial Killbots!!!", 3, 2 * 60 + 0),
     track( 39, "Merry Gentlemen", "God Rest ye Merry, Gentlemen", 7, 1 * 60 + 55),
-    track( 40, "Mountain King", "In The Hell of The Mountain King", 8, 2 * 60 + 30),
+    track( 40, "Mountain King", "In The Hall of The Mountain King", 8, 2 * 60 + 30),
     track( 41, "O Canada", "O Canada", 3, 1 * 60 + 8),
     track( 42, "O Christmas Tree", "O Christmas Tree", 4, 2 * 60 + 25),
     track( 43, "Ode to Joy", "Ode to Joy", 2, 1 * 60 + 43),
