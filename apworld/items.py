@@ -114,19 +114,19 @@ def create_all_items(world: APTromboneWorld) -> None:
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Hot Dog"))
 
-    for i in range(self.options.trap_flip.value):
+    for i in range(world.options.trap_flip.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Flip Controls Trap"))
-    for i in range(self.options.trap_deaf.value):
+    for i in range(world.options.trap_deaf.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Silence Track Trap"))
-    for i in range(self.options.trap_mute.value):
+    for i in range(world.options.trap_mute.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Silence Trombone Trap"))
-    for i in range(self.options.trap_hide.value):
+    for i in range(world.options.trap_hide.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Hide Notes Trap"))
-    for i in range(self.options.trap_breath.value):
+    for i in range(world.options.trap_breath.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("No Breath Trap"))
     
