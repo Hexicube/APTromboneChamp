@@ -11,6 +11,13 @@ ITEM_NAME_TO_ID = {
     "Nothing": 1002,
     "Fun Fact": 1003,
     "Hot Dog": 1004,
+
+    "Flip Controls Trap": 1005,
+    "Silence Track Trap": 1006,
+    "Silence Trombone Trap": 1007,
+    "Hide Notes Trap": 1008,
+    "No Breath Trap": 1009,
+
     "Progressive Difficulty": 1011,
     "Difficulty 2": 1012,
     "Difficulty 3": 1013,
@@ -28,6 +35,13 @@ ITEM_CLASS = {
     "Nothing": ItemClassification.filler,
     "Fun Fact": ItemClassification.filler,
     "Hot Dog": ItemClassification.progression,
+
+    "Flip Controls Trap": ItemClassification.trap,
+    "Silence Track Trap": ItemClassification.trap,
+    "Silence Trombone Trap": ItemClassification.trap,
+    "Hide Notes Trap": ItemClassification.trap,
+    "No Breath Trap": ItemClassification.trap,
+
     "Progressive Difficulty": ItemClassification.progression | ItemClassification.useful,
     "Difficulty 2": ItemClassification.progression | ItemClassification.useful,
     "Difficulty 3": ItemClassification.progression | ItemClassification.useful,

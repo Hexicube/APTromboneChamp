@@ -187,6 +187,56 @@ class RemovedTracks(OptionList):
 
 # TODO: DisablePlayLocations(Toggle) - when enabled, removes the "Play: X" locations (halves location count)
 
+class FlipControlsTrapCount(Range):
+    """
+    Sets how many Flip Controls traps to add.
+    Flip Controls traps will temporarily invert your controls.
+    """
+    display_name = "Flip Controls Trap Count"
+    range_start = 0
+    range_end = 20
+    default = 0
+
+class SilenceTrackTrapCount(Range):
+    """
+    Sets how many Silence Track traps to add.
+    Silence Track traps will temporarily mute the track.
+    """
+    display_name = "Silence Track Trap Count"
+    range_start = 0
+    range_end = 20
+    default = 0
+
+class SilenceTromboneTrapCount(Range):
+    """
+    Sets how many Silence Trombone traps to add.
+    Silence Trombone traps will temporarily mute the trombone's toots.
+    """
+    display_name = "Silence Trombone Trap Count"
+    range_start = 0
+    range_end = 20
+    default = 0
+
+class HideNotesTrapCount(Range):
+    """
+    Sets how many Hide Notes traps to add.
+    Hide Notes traps will temporarily hide both the note track and your pitch indicator.
+    """
+    display_name = "Hide Notes Trap Count"
+    range_start = 0
+    range_end = 20
+    default = 0
+
+class NoBreathTrapCount(Range):
+    """
+    Sets how many No Breath traps to add.
+    No Breath traps will instantly make you out of breath.
+    """
+    display_name = "No Breath Trap Count"
+    range_start = 0
+    range_end = 20
+    default = 0
+
 class OptionLimitBypass(Toggle):
     """
     If enabled, bypasses option restrictions that throw an OptionError but are not strictly mistakes.
@@ -216,6 +266,12 @@ class APTromboneOptions(PerGameCommonOptions):
     undertale_deltarune: IncludeTobyFox
     removed_tracks: RemovedTracks
 
+    trap_flip: FlipControlsTrapCount
+    trap_deaf: SilenceTrackTrapCount
+    trap_mute: SilenceTromboneTrapCount
+    trap_hide: HideNotesTrapCount
+    trap_breath: NoBreathTrapCount
+
     bypass_options: OptionLimitBypass
 
 option_groups = [
@@ -230,6 +286,10 @@ option_groups = [
     OptionGroup(
         "Item Options",
         [FunFacts, TrackGating, DifficultyGating],
+    ),
+    OptionGroup(
+        "Trap Options",
+        [FlipControlsTrapCount, SilenceTrackTrapCount, SilenceTromboneTrapCount, HideNotesTrapCount, NoBreathTrapCount]
     )
 ]
 
@@ -252,6 +312,12 @@ option_presets = {
         "celeste": False,
         "pizza_tower": False,
         "undertale_deltarune": False,
-        "removed_tracks": []
+        "removed_tracks": [],
+
+        "trap_flip": 0,
+        "trap_deaf": 0,
+        "trap_mute": 0,
+        "trap_hide": 0,
+        "trap_breath": 0
     }
 }
