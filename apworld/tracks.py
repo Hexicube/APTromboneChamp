@@ -162,16 +162,16 @@ def get_track_list(world):
     return tracks
 
 def get_hardest_tracks(world):
-    max_diff = world.options.max_diff
+    max_diff = world.options.max_diff.value
     track_list = get_track_list(world)
     new_list = []
     for track in track_list:
-        if track["stars"] == max_diff:
+        if track["stars"] == max_diff.value:
             new_list.append(track)
     return new_list
 
 def get_easiest_tracks(world):
-    min_diff = world.options.min_diff
+    min_diff = world.options.min_diff.value
     track_list = get_track_list(world)
     new_list = []
     for track in track_list:

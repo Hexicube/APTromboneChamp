@@ -13,7 +13,7 @@ def set_all_rules(world: APTromboneWorld) -> None:
     rating_end = world.options.rating.value
     rating_diff = rating_start - rating_end
     
-    rating_gap = world.options.easy_track
+    rating_gap = world.options.easy_track.value
     
     num_tracks_win = world.options.goal.value
     track_list = tracks.get_track_list(world)
