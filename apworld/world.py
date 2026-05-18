@@ -22,14 +22,67 @@ class APTromboneWorld(World):
             "Difficulty 2", "Difficulty 3", "Difficulty 4", "Difficulty 5", "Difficulty 6", "Difficulty 7", "Difficulty 8", "Difficulty 9", "Difficulty 10"
         ]
     }
+    
+    def get_loc_count(self):
+        track_list = tracks.get_track_list(self)
+        num_locs = len(track_list) * 2
+        # TODO: dont double when option to disable "Play: X" locs is enabled
+        return num_locs
+    
+    def get_item_breakdown(self):
+        breakdown = {
+            "total": 0,
+            "tracks": 0,
+            "difficulties": 0,
+            "ranks": 0,
+            "hotdogs": 0,
+            "traps": 0
+        }
+        track_list = tracks.get_track_list(self)
+        min_diff = self.options.min_diff.value
+        max_diff = self.options.max_diff.value
+        
+        track_gating = self.options.track_gating.value
+        if track_gating == 1:
+            breakdown["total"] += len(track_list) - 1
+            breakdown["tracks"] += len(track_list) - 1
+        if track_gating == 2:
+            num_track_items = len(track_list)
+            num_min = 0
+            for track in track_list:
+                if track["stars"] == min_diff: num_min += 1
+            num_track_items -= num_min
+            breakdown["total"] += num_min
+            breakdown["tracks"] += num_min
+
+        if self.options.difficulty_gating.value != 0:
+            breakdown["total"] += max_diff - min_diff
+            breakdown["difficulties"] += max_diff - min_diff
+
+        rating_start = self.options.rating_start.value
+        rating_end = self.options.rating.value
+        breakdown["total"] += rating_start - rating_end
+        breakdown["ranks"] += rating_start - rating_end
+        
+        hotdogs = self.options.hot_dogs.value + self.options.extra_hot_dogs.value
+        breakdown["total"] += hotdogs
+        breakdown["hotdogs"] += hotdogs
+
+        # add these after checking for filler space
+        traps = self.options.trap_flip.value + self.options.trap_deaf.value + self.options.trap_mute.value + self.options.trap_hide.value + self.options.trap_breath.value
+        breakdown["total"] += traps
+        breakdown["traps"] += traps
+        
+        return breakdown
+        
 
     def generate_early(self) -> None:
         # option limit bypass
         bypass = self.options.bypass_options.value
 
         # must have two difficulty levels at minimum
-        min_diff = self.options.min_diff
-        max_diff = self.options.max_diff
+        min_diff = self.options.min_diff.value
+        max_diff = self.options.max_diff.value
         if max_diff <= min_diff:
             raise OptionError(f"max_diff({max_diff}) must be greater than min_diff({min_diff})")
         # rating range has to make sense
@@ -130,38 +183,12 @@ class APTromboneWorld(World):
             if goal_track == shortest:
                 raise OptionError("Track gating is On and goal track is set to starting track")
         # verify enough locations exist for expected items
-        num_locs = len(track_list) * 2 # TODO: dont double when option to disable "Play: X" locs is enabled
-        num_items = 0
-
-        if track_gating == 1:
-            num_items += len(track_list) - 1
-        if track_gating == 2:
-            num_track_items = len(track_list)
-            num_min = 0
-            for track in track_list:
-                if track["stars"] == min_diff: num_min += 1
-            num_track_items -= num_min
-            num_items += num_track_items
-
-        if diff_gating != 0:
-            num_items += max_diff - min_diff
-
-        num_items += rating_start - rating_end
-
-        num_items += self.options.hot_dogs.value
-        num_items += self.options.extra_hot_dogs.value
-
-        if num_locs-2 < num_items and not bypass: # NOTE: num_locs reduced by two as there will always be a final track to play
-            raise OptionError(f"Settings are too restrictive, location count {num_locs}-2 is below required item count {num_items} (must have space for 2 fillers)")
-
-        # add these after checking for filler space
-        num_items += self.options.trap_flip.value
-        num_items += self.options.trap_deaf.value
-        num_items += self.options.trap_mute.value
-        num_items += self.options.trap_hide.value
-        num_items += self.options.trap_breath.value
+        num_locs = self.get_loc_count()
+        breakdown = self.get_item_breakdown()
         
-        if num_locs < num_items:
+        if num_locs - 2 < breakdown["total"] - breakdown["traps"] and not bypass: # NOTE: num_locs reduced by two as there will always be a final track to play
+            raise OptionError(f"Settings are too restrictive, location count {num_locs}-2 is below required item count {num_items} (must have space for 2 fillers)")
+        if num_locs < breakdown["total"]:
             raise OptionError(f"Settings are too restrictive, location count {num_locs} is below required item count {num_items}")
 
     def create_regions(self) -> None:
@@ -215,3 +242,13 @@ class APTromboneWorld(World):
         else:
             if num_tracks_win > len(track_list): num_tracks_win = len(track_list)
             spoiler_handle.write(f"\nGoal Tracks Count: {num_tracks_win}")
+        
+        spoiler_handle.write("\n");
+        num_locs = self.get_loc_count()
+        breakdown = self.get_item_breakdown()
+        spoiler_handle.write(f"\nTrack items: {breakdown["tracks"]}")
+        spoiler_handle.write(f"\nDifficulty items: {breakdown["difficulties"]}")
+        spoiler_handle.write(f"\nRank items: {breakdown["ranks"]}")
+        spoiler_handle.write(f"\nHot Dog items: {breakdown["hotdogs"]}")
+        spoiler_handle.write(f"\nTrap items: {breakdown["traps"]}")
+        spoiler_handle.write(f"\nFiller items: {num_locs - breakdown["total"]}")
