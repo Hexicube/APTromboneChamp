@@ -229,7 +229,7 @@ class APTromboneWorld(World):
         secs = len_sum % 60
         spoiler_handle.write(f"\nTotal duration: {hrs}:{mins:02}:{secs:02}")
         easy_tracks = tracks.get_easiest_tracks(self)
-        if self.options.track_gating == 1:
+        if self.options.track_gating.value == 1:
             shortest = easy_tracks[0]
             for track in easy_tracks:
                 if track["duration"] < shortest["duration"]: shortest = track
