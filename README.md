@@ -60,11 +60,11 @@ YAML settings:
 - removed_tracks: A list of tracks to remove (both items and locations)
   - All tracks must be exactly the same as short track names
   - Can include tracks that would be removed for other reasons (such as not enabling a DLC)
-- trap_flip: How many Flip Controls traps to add
-- trap_deaf: How many Silence Track traps to add
-- trap_mute: How many Silence Trombone traps to add
-- trap_hide: How many Hide Notes traps to add
-- trap_breath: How many No Breath traps to add
+- trap_flip: How many Flip Controls traps to add, which temporarily invert your controls
+- trap_deaf: How many Silence Track traps to add, which temporarily mute the backing track
+- trap_mute: How many Silence Trombone traps to add, which temporarily mute your trombone
+- trap_hide: How many Hide Notes traps to add, which temporarily hide both the note track and your pitch indicator
+- trap_breath: How many No Breath traps to add, which instantly make you out of breath
 
 Settings limitations:
 - max_diff must be strictly greater than min_diff
@@ -82,7 +82,7 @@ Settings limitations:
 - There must be enough tracks to place all items
   - This includes trap items, generation will fail rather than reducing how many traps there are
   - This does NOT include Fun Fact items, which replace Nothing items
-  - *There must also be space for two filler items, as one track will be the final track played
+  - *There must also be space for two filler items or traps, as one track will be the final track played
 
 Entries with an asterisk can be bypassed via enabling the hidden option bypass_options.
 Enabling this may cause slow generation or failures, especially solo; use at your own risk.
