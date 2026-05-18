@@ -151,18 +151,18 @@ class APTromboneWorld(World):
         num_items += self.options.hot_dogs.value
         num_items += self.options.extra_hot_dogs.value
 
+        if num_locs-2 < num_items and not bypass: # NOTE: num_locs reduced by two as there will always be a final track to play
+            raise OptionError(f"Settings are too restrictive, location count {num_locs}-2 is below required item count {num_items} (must have space for 2 fillers)")
+
+        # add these after checking for filler space
         num_items += self.options.trap_flip.value
         num_items += self.options.trap_deaf.value
         num_items += self.options.trap_mute.value
         num_items += self.options.trap_hide.value
         num_items += self.options.trap_breath.value
-
-        if num_locs-2 < num_items: # NOTE: num_locs reduced by two as there will always be a final track to play
-            if bypass:
-                if num_locs < num_items:
-                    raise OptionError(f"Settings are too restrictive, location count {num_locs} is below required item count {num_items}")
-            else:
-                raise OptionError(f"Settings are too restrictive, location count {num_locs}-2 is below required item count {num_items}")
+        
+        if num_locs < num_items:
+            raise OptionError(f"Settings are too restrictive, location count {num_locs} is below required item count {num_items}")
 
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
