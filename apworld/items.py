@@ -28,8 +28,7 @@ ITEM_NAME_TO_ID = {
     "Silence Trombone Trap": 1203,
     "Hide Notes Trap": 1204,
     "No Breath Trap": 1205,
-    "Warble Track Trap": 1206,
-    "Warble Trombone Trap": 1207,
+    "Warble Trombone Trap": 1206,
 }
 
 ITEM_CLASS = {
