@@ -220,7 +220,7 @@ class SilenceTromboneTrapCount(Range):
 class HideNotesTrapCount(Range):
     """
     Sets how many Hide Notes traps to add.
-    Hide Notes traps will temporarily hide both the note track and your pitch indicator.
+    Hide Notes traps will temporarily hide the note track.
     """
     display_name = "Hide Notes Trap Count"
     range_start = 0
