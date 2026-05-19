@@ -132,6 +132,9 @@ def create_all_items(world: APTromboneWorld) -> None:
     for i in range(world.options.trap_breath.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("No Breath Trap"))
+    for i in range(world.options.trap_warble.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("Warble Trombone Trap"))
     
     number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player)) - number_of_items
     num_facts = world.options.fun_facts.value

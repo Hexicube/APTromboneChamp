@@ -68,8 +68,7 @@ class APTromboneWorld(World):
         breakdown["total"] += hotdogs
         breakdown["hotdogs"] += hotdogs
 
-        # add these after checking for filler space
-        traps = self.options.trap_flip.value + self.options.trap_deaf.value + self.options.trap_mute.value + self.options.trap_hide.value + self.options.trap_breath.value
+        traps = self.options.trap_flip.value + self.options.trap_deaf.value + self.options.trap_mute.value + self.options.trap_hide.value + self.options.trap_breath.value + self.options.trap_warble.value
         breakdown["total"] += traps
         breakdown["traps"] += traps
         

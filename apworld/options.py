@@ -237,6 +237,16 @@ class NoBreathTrapCount(Range):
     range_end = 20
     default = 0
 
+class WarbleTromboneTrap(Range):
+    """
+    Sets how many Warble Trombone traps to add.
+    Warble Trombone traps will make your trombone sounds change pitch over time.
+    """
+    display_name = "Warble Trombone Trap Count"
+    range_start = 0
+    range_end = 20
+    default = 0
+
 class OptionLimitBypass(Toggle):
     """
     If enabled, bypasses option restrictions that throw an OptionError but are not strictly mistakes.
@@ -271,6 +281,7 @@ class APTromboneOptions(PerGameCommonOptions):
     trap_mute: SilenceTromboneTrapCount
     trap_hide: HideNotesTrapCount
     trap_breath: NoBreathTrapCount
+    trap_warble: WarbleTromboneTrap
 
     bypass_options: OptionLimitBypass
 
@@ -289,7 +300,7 @@ option_groups = [
     ),
     OptionGroup(
         "Trap Options",
-        [FlipControlsTrapCount, SilenceTrackTrapCount, SilenceTromboneTrapCount, HideNotesTrapCount, NoBreathTrapCount]
+        [FlipControlsTrapCount, SilenceTrackTrapCount, SilenceTromboneTrapCount, HideNotesTrapCount, NoBreathTrapCount, WarbleTromboneTrap]
     )
 ]
 
@@ -318,6 +329,7 @@ option_presets = {
         "trap_deaf": 0,
         "trap_mute": 0,
         "trap_hide": 0,
-        "trap_breath": 0
+        "trap_breath": 0,
+        "trap_warble": 0
     }
 }
