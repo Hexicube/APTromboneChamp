@@ -60,13 +60,13 @@ YAML settings:
 - removed_tracks: A list of tracks to remove (both items and locations)
   - All tracks must be exactly the same as short track names
   - Can include tracks that would be removed for other reasons (such as not enabling a DLC)
-- trap_flip: How many Flip Controls traps to add, which temporarily invert your controls
-- trap_deaf: How many Silence Track traps to add, which temporarily mute the backing track
-- trap_mute: How many Silence Trombone traps to add, which temporarily mute your trombone
-- trap_hide: How many Hide Notes traps to add, which temporarily hides the note track
-- trap_breath: How many No Breath traps to add, which instantly make you out of breath
-- trap_warble: How many Warble Trombone traps to add, which mess with the pitch of your trombone
-- trap_warp: How many Warp Speed traps to add, which mess with the track's speed
+- trap_flip: How many Flip Controls traps to add, which inverts your controls for 8s
+- trap_deaf: How many Silence Track traps to add, which mutes the backing track for 5s
+- trap_mute: How many Silence Trombone traps to add, which mutes your trombone for 5s
+- trap_hide: How many Hide Notes traps to add, which hides the note track for 5s
+- trap_breath: How many No Breath traps to add, which makes you out of breath for 2s
+- trap_warble: How many Warble Trombone traps to add, which messes with the pitch of your trombone for 5s
+- trap_warp: How many Warp Speed traps to add, which messes with the track's speed for 10s
 
 Settings limitations:
 - max_diff must be strictly greater than min_diff
