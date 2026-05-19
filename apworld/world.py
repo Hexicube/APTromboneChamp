@@ -52,8 +52,8 @@ class APTromboneWorld(World):
             for track in track_list:
                 if track["stars"] == min_diff: num_min += 1
             num_track_items -= num_min
-            breakdown["total"] += num_min
-            breakdown["tracks"] += num_min
+            breakdown["total"] += num_track_items
+            breakdown["tracks"] += num_track_items
 
         if self.options.difficulty_gating.value != 0:
             breakdown["total"] += max_diff - min_diff
@@ -186,9 +186,9 @@ class APTromboneWorld(World):
         breakdown = self.get_item_breakdown()
         
         if num_locs - 2 < breakdown["total"] - breakdown["traps"] and not bypass: # NOTE: num_locs reduced by two as there will always be a final track to play
-            raise OptionError(f"Settings are too restrictive, location count {num_locs}-2 is below required item count {num_items} (must have space for 2 fillers)")
+            raise OptionError(f"Settings are too restrictive, location count {num_locs}-2 is below required item count {breakdown["total"]} (must have space for 2 fillers)")
         if num_locs < breakdown["total"]:
-            raise OptionError(f"Settings are too restrictive, location count {num_locs} is below required item count {num_items}")
+            raise OptionError(f"Settings are too restrictive, location count {num_locs} is below required item count {breakdown["total"]}")
 
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
