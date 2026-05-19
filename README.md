@@ -63,7 +63,7 @@ YAML settings:
 - trap_flip: How many Flip Controls traps to add, which temporarily invert your controls
 - trap_deaf: How many Silence Track traps to add, which temporarily mute the backing track
 - trap_mute: How many Silence Trombone traps to add, which temporarily mute your trombone
-- trap_hide: How many Hide Notes traps to add, which temporarily hide both the note track and your pitch indicator
+- trap_hide: How many Hide Notes traps to add, which temporarily hides the note track
 - trap_breath: How many No Breath traps to add, which instantly make you out of breath
 
 Settings limitations:

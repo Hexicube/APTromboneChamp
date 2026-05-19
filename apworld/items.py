@@ -12,12 +12,6 @@ ITEM_NAME_TO_ID = {
     "Fun Fact": 1003,
     "Hot Dog": 1004,
 
-    "Flip Controls Trap": 1005,
-    "Silence Track Trap": 1006,
-    "Silence Trombone Trap": 1007,
-    "Hide Notes Trap": 1008,
-    "No Breath Trap": 1009,
-
     "Progressive Difficulty": 1011,
     "Difficulty 2": 1012,
     "Difficulty 3": 1013,
@@ -28,6 +22,14 @@ ITEM_NAME_TO_ID = {
     "Difficulty 8": 1018,
     "Difficulty 9": 1019,
     "Difficulty 10": 1020,
+
+    "Flip Controls Trap": 1201,
+    "Silence Track Trap": 1202,
+    "Silence Trombone Trap": 1203,
+    "Hide Notes Trap": 1204,
+    "No Breath Trap": 1205,
+    "Warble Track Trap": 1206,
+    "Warble Trombone Trap": 1207,
 }
 
 ITEM_CLASS = {
@@ -35,12 +37,6 @@ ITEM_CLASS = {
     "Nothing": ItemClassification.filler,
     "Fun Fact": ItemClassification.filler,
     "Hot Dog": ItemClassification.progression,
-
-    "Flip Controls Trap": ItemClassification.trap,
-    "Silence Track Trap": ItemClassification.trap,
-    "Silence Trombone Trap": ItemClassification.trap,
-    "Hide Notes Trap": ItemClassification.trap,
-    "No Breath Trap": ItemClassification.trap,
 
     "Progressive Difficulty": ItemClassification.progression | ItemClassification.useful,
     "Difficulty 2": ItemClassification.progression | ItemClassification.useful,
@@ -52,6 +48,14 @@ ITEM_CLASS = {
     "Difficulty 8": ItemClassification.progression | ItemClassification.useful,
     "Difficulty 9": ItemClassification.progression | ItemClassification.useful,
     "Difficulty 10": ItemClassification.progression | ItemClassification.useful,
+
+    "Flip Controls Trap": ItemClassification.trap,
+    "Silence Track Trap": ItemClassification.trap,
+    "Silence Trombone Trap": ItemClassification.trap,
+    "Hide Notes Trap": ItemClassification.trap,
+    "No Breath Trap": ItemClassification.trap,
+    "Warble Track Trak": ItemClassification.trap,
+    "Warble Trombone Trap": ItemClassification.trap,
 }
 
 for track in tracks.TRACK_LIST:
