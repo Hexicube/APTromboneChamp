@@ -66,6 +66,7 @@ YAML settings:
 - trap_hide: How many Hide Notes traps to add, which temporarily hides the note track
 - trap_breath: How many No Breath traps to add, which instantly make you out of breath
 - trap_warble: How many Warble Trombone traps to add, which mess with the pitch of your trombone
+- trap_warp: How many Warp Speed traps to add, which mess with the track's speed
 
 Settings limitations:
 - max_diff must be strictly greater than min_diff

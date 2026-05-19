@@ -247,6 +247,16 @@ class WarbleTromboneTrap(Range):
     range_end = 20
     default = 0
 
+class WarpSpeedTrap(Range):
+    """
+    Sets how many Warp Speed traps to add.
+    Warp Speed traps will make the track change speed over time.
+    """
+    display_name = "Warp Speed Trap Count"
+    range_start = 0
+    range_end = 20
+    default = 0
+
 class OptionLimitBypass(Toggle):
     """
     If enabled, bypasses option restrictions that throw an OptionError but are not strictly mistakes.
@@ -282,6 +292,7 @@ class APTromboneOptions(PerGameCommonOptions):
     trap_hide: HideNotesTrapCount
     trap_breath: NoBreathTrapCount
     trap_warble: WarbleTromboneTrap
+    trap_warp: WarpSpeedTrap
 
     bypass_options: OptionLimitBypass
 
@@ -300,7 +311,7 @@ option_groups = [
     ),
     OptionGroup(
         "Trap Options",
-        [FlipControlsTrapCount, SilenceTrackTrapCount, SilenceTromboneTrapCount, HideNotesTrapCount, NoBreathTrapCount, WarbleTromboneTrap]
+        [FlipControlsTrapCount, SilenceTrackTrapCount, SilenceTromboneTrapCount, HideNotesTrapCount, NoBreathTrapCount, WarbleTromboneTrap, WarpSpeedTrap]
     )
 ]
 
@@ -330,6 +341,7 @@ option_presets = {
         "trap_mute": 0,
         "trap_hide": 0,
         "trap_breath": 0,
-        "trap_warble": 0
+        "trap_warble": 0,
+        "trap_warp": 0
     }
 }

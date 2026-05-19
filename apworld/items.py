@@ -29,6 +29,7 @@ ITEM_NAME_TO_ID = {
     "Hide Notes Trap": 1204,
     "No Breath Trap": 1205,
     "Warble Trombone Trap": 1206,
+    "Warp Speed Trap": 1207,
 }
 
 ITEM_CLASS = {
@@ -55,6 +56,7 @@ ITEM_CLASS = {
     "No Breath Trap": ItemClassification.trap,
     "Warble Track Trak": ItemClassification.trap,
     "Warble Trombone Trap": ItemClassification.trap,
+    "Warp Speed Trap": ItemClassification.trap,
 }
 
 for track in tracks.TRACK_LIST:
@@ -135,6 +137,9 @@ def create_all_items(world: APTromboneWorld) -> None:
     for i in range(world.options.trap_warble.value):
         number_of_items += 1
         world.multiworld.itempool.append(world.create_item("Warble Trombone Trap"))
+    for i in range(world.options.trap_warp.value):
+        number_of_items += 1
+        world.multiworld.itempool.append(world.create_item("Warp Speed Trap"))
     
     number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player)) - number_of_items
     num_facts = world.options.fun_facts.value
