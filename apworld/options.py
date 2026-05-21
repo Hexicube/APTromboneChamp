@@ -65,7 +65,7 @@ class EasyTrackStarGap(Range):
     display_name = "Easy Track Difficulty Gap"
     range_start = 0
     range_end = 5
-    default = 3
+    default = 1
 
 class FunFacts(Range):
     """
@@ -84,7 +84,7 @@ class HotDogs(Range):
     display_name = "Hot Dogs"
     range_start = 0
     range_end = 20
-    default = 10
+    default = 0
 
 class ExtraHotDogs(Range):
     """
