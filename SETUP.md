@@ -13,6 +13,7 @@
 2. Create a settings yaml via the option creator in the AP launcher, or by generating option templates and editing that.
 - Make sure you pay attention to [settings limitations](https://github.com/Hexicube/APTromboneChamp), it's easy to make settings that the world will refuse to generate with.
 3. Place your settings yaml in /players and generate your world, or send your settings yaml to the host and wait for them to do so.
+- Consider doing a test generation locally to verify settings with a spoiler log enabled, the list of tracks your settings include will be shown, as well as the number of each item type (notably filler).
 
 ## Modded client
 
